@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MyBot.Bot
 {
@@ -25,7 +26,7 @@ namespace MyBot.Bot
 			var chatId = args.ClientInfo.ChatId;
 			var imageUrl = args.ImageUrl;
 			var text = args.TextMessage;
-
+			var markup = new InlineKeyboardMarkup(args.Buttons);
 
 			if (!string.IsNullOrEmpty(imageUrl)) {
 				client.SendPhotoAsync(chatId, InputFile.FromUri(imageUrl), null, text);

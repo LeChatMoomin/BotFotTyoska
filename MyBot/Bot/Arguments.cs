@@ -10,7 +10,7 @@ namespace MyBot.Bot
 		public ClientInfo ClientInfo { get; set; }
 		public string TextMessage { get; set; }
 		public string ImageUrl { get; set; }
-		public IEnumerable<KeyboardButton> Buttons { get; set; }
+		public IEnumerable<InlineKeyboardButton> Buttons { get; set; }
 	}
 
 	public class RequestEventArgs

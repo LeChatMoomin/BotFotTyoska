@@ -19,7 +19,7 @@ namespace MyBot.DataBase
 
 		public SQLManager() { }
 
-		public void SaveUser(PlayerData data)
+		public void Save(PlayerData data)
 		{
 			try {
 				using (var connection = new MySqlConnection(ConnectionString)) {
@@ -36,7 +36,23 @@ namespace MyBot.DataBase
 			} catch (Exception e) {
 				Console.WriteLine($"Не удалось сохраниться, вот ошибка: {e.Message}");
 			}
+		}
 
+		public void Save(CharacterData data)
+		{
+			try {
+				using (var connection = new MySqlConnection(ConnectionString)) {
+					var saveCommand = $"UPDATE `{DbName}`.`Users` SET `State` = {(int)data.State} WHERE User_id = {data.Id};";
+					using (var reader = new MySqlCommand(saveCommand, connection).ExecuteReader()) {
+						if (reader.Read()) {
+							SaveCharacter(connection, data);
+						}
+					}
+					connection.Close();
+				}
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось сохраниться, вот ошибка: {e.Message}");
+			}
 		}
 
 		private void SaveCharacter(MySqlConnection connection, CharacterData data)

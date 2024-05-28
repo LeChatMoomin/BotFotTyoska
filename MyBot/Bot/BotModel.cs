@@ -9,10 +9,9 @@ namespace MyBot.Bot
 	public class BotModel
 	{
 		public event EventHandler<ResponseEventArgs> OnReadyToResponse;
-		public readonly SQLManager SQLManager = new SQLManager();
 
+		private readonly SQLManager SQLManager = new SQLManager();
 		private readonly Dictionary<long, Player> LoadedPlayers = new Dictionary<long, Player>();
-		private readonly Dictionary<long, List<Character>> LoadedCharacters = new Dictionary<long, List<Character>>();
 
 		public void HandleCommand(object sender, RequestEventArgs args)
 		{
@@ -28,13 +27,46 @@ namespace MyBot.Bot
 				
 			} else if (args.Command.IsCharacterAction(out var characterAction)) {//если это действие перса
 
-			} else {
-
+			} else {//остальные команды
+				HandleBaseCommand(player, args);
 			}
 			
 		}
 
-		private void Response(ClientInfo clientInfo, string text, string image, IEnumerable<KeyboardButton> buttons = null)
+		private void HandlePlayerAction(Player player, PlayerAction action, RequestEventArgs args)
+		{
+			//хуё моё
+			SQLManager.Save(player.GetData());
+		}
+
+		private void HandleCharacterAction(Character character, CharacterAction action, RequestEventArgs args)
+		{
+			//хуё моё
+			SQLManager.Save(character.GetData());
+		}
+
+		private void HandleBaseCommand(Player player, RequestEventArgs args)
+		{
+			switch (args.Command) {
+				case GameCommand.Start:
+					if (player.CurrentState == PlayerState.Greetings) {
+						Response(args.ClientInfo, "Привет, здарова.\nЯ хочу сыграть с тобой в игру", buttons: new[] { Buttons.CreateChar });
+					} else {
+						Response(args.ClientInfo, "Куда вот ты стартуешь? Чтобы что?\nМы уже начали, играй давай", buttons: new[] { Buttons.Ok });
+					}
+					break;
+				case GameCommand.Ok:
+
+					break;
+				default:
+					break;
+			}
+			SQLManager.Save(player.GetData());
+		}
+
+		
+
+		private void Response(ClientInfo clientInfo, string text, string image = null, IEnumerable<InlineKeyboardButton> buttons = null)
 		{
 			var response = new ResponseEventArgs { 
 				ClientInfo = clientInfo,
