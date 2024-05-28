@@ -75,7 +75,7 @@ namespace MyBot.Bot
 						BotClient = client,
 						UserId = message.From.Id
 					},
-					Command = command
+					Command = command.Value
 				};
 				OnGotCommandMessage.Invoke(this, arguments);
 			}
@@ -85,14 +85,14 @@ namespace MyBot.Bot
 		{
 			switch (message.Type) {
 				case MessageType.Text:
-					if (TryParseCommand(message.Text, out Command command)) {
+					if (TryParseCommand(message.Text, out GameCommand? command)) {
 						var arguments = new RequestEventArgs {
 							ClientInfo = new ClientInfo {
 								ChatId = message.Chat.Id,
 								BotClient = client,
 								UserId = message.From.Id
 							},
-							Command = command 
+							Command = command.Value 
 						};
 						OnGotCommandMessage.Invoke(this, arguments);
 					}
@@ -149,12 +149,12 @@ namespace MyBot.Bot
 			}
 		}
 
-		private bool TryParseCommand(string text, out Command result)
+		private bool TryParseCommand(string text, out GameCommand? result)
 		{
-			result = Command.Unknown;
+			result = null;
 			if (text.StartsWith('/')) {
 				var editedText = text.Replace("/", string.Empty).ToLower();
-				foreach (var command in Enum.GetValues<Command>()) {
+				foreach (var command in Enum.GetValues<GameCommand>()) {
 					var commandName = command.ToString().ToLower();
 					if (editedText.Equals(commandName)) {
 						result = command;
