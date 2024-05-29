@@ -38,10 +38,10 @@ namespace MyBot.Game
 				(CharacterState.School, CharacterAction.GoHome) => CharacterState.Home,
 				(CharacterState.Shop, CharacterAction.GoHome) => CharacterState.Home,
 				(CharacterState.Arena, CharacterAction.GoHome) => CharacterState.Home,
-				//(CharacterState.School, CharacterAction.GoArena) => CharacterState.Arena, 
-				//(CharacterState.Shop, CharacterAction.GoArena) => CharacterState.Arena, 
-				//(CharacterState.Shop, CharacterAction.GoSchool) => CharacterState.School,
-				//(CharacterState.School, CharacterAction.GoShop) => CharacterState.Shop,
+				(CharacterState.School, CharacterAction.GoArena) => CharacterState.Arena,
+				(CharacterState.Shop, CharacterAction.GoArena) => CharacterState.Arena,
+				(CharacterState.Shop, CharacterAction.GoSchool) => CharacterState.School,
+				(CharacterState.School, CharacterAction.GoShop) => CharacterState.Shop,
 				_ => state,
 			};
 		}

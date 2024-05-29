@@ -22,6 +22,17 @@ namespace MyBot.Game
 			StateMachine.StateChanged += OnStateChanged;
 		}
 
+		public Location GetCurrentLocation()
+		{
+			return CurrentState switch {
+				CharacterState.Home => Locations.Home,
+				CharacterState.Shop => Locations.Shop,
+				CharacterState.School => Locations.School,
+				CharacterState.Arena => Locations.Arena,
+				_ => null
+			};
+		}
+
 		public CharacterData GetData() => new CharacterData(Data);
 
 		private void OnStateChanged(object sender, CharacterState newState)
