@@ -29,16 +29,15 @@
 		public int Id { get; set; }
 		public long OwnerId { get; set; }
 		public string Name { get; set; }
-		public int Level { get; set; }
-		public int Phy { get; set; }
-		public int Str { get; set; }
-		public int Agi { get; set; }
-		public int Int { get; set; }
+		public int Level { get; set; } = 1;
+		public int Phy { get; set; } = 1;
+		public int Str { get; set; } = 1;
+		public int Agi { get; set; } = 1;
+		public int Int { get; set; } = 1;
 		public int Gold { get; set; }
 		public CharacterState State { get; set; }
 		public ItemData Weapon { get; set; }
 		public ItemData Armor { get; set; }
 		public ItemData Potion { get; set; }
-
 	}
 }
