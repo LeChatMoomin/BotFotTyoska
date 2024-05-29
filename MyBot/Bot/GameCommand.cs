@@ -6,7 +6,7 @@ namespace MyBot.Bot
 	{
 		//база
 		Start = -1,
-		Ok = 0,
+		MainMenu = 0,
 		CreateChar = 1,
 		DeleteChar = 2,
 		CharList = 3,

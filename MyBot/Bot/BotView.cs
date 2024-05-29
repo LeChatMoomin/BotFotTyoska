@@ -10,9 +10,9 @@ namespace MyBot.Bot
 {
 	public class BotView
 	{
-		public event EventHandler<RequestEventArgs> OnGotCommandMessage;
+		public event EventHandler<RequestEventArgs> OnGotMessage;
 		
-		const string BotToken = "";
+		const string BotToken = "7070663657:AAH4PmaqtiVzsK2EOld62NAx-0rAnCYcI2w";
 
 		public BotView()
 		{
@@ -26,20 +26,17 @@ namespace MyBot.Bot
 			var chatId = args.ClientInfo.ChatId;
 			var imageUrl = args.ImageUrl;
 			var text = args.TextMessage;
-			var markup = new InlineKeyboardMarkup(args.Buttons);
+			var markup = args.Buttons != null ? new InlineKeyboardMarkup(args.Buttons) : null;
 
 			if (!string.IsNullOrEmpty(imageUrl)) {
-				client.SendPhotoAsync(chatId, InputFile.FromUri(imageUrl), null, text);
+				client.SendPhotoAsync(chatId, InputFile.FromUri(imageUrl), null, text, replyMarkup: markup);
 			} else if (!string.IsNullOrEmpty(text)) {
-				client.SendTextMessageAsync(chatId, text);
+				client.SendTextMessageAsync(chatId, text, replyMarkup: markup);
 			}
 		}
 
 		private async Task HandleUpdateAsync(ITelegramBotClient client, Update update, CancellationToken token)
 		{
-			if (token.IsCancellationRequested) {
-				var asd = 0;
-			}
 			switch (update.Type) {
 				case UpdateType.Message:
 				case UpdateType.EditedMessage:
@@ -47,7 +44,7 @@ namespace MyBot.Bot
 					break;
 				case UpdateType.InlineQuery:
 				case UpdateType.CallbackQuery:
-					HandleCallbackQuery(client, update.CallbackQuery.Data, update.Message);
+					HandleCallbackQuery(client, update.CallbackQuery);
 					break;
 				#region other cases
 				case UpdateType.Unknown:
@@ -67,18 +64,19 @@ namespace MyBot.Bot
 			}
 		}
 
-		private void HandleCallbackQuery(ITelegramBotClient client, string data, Message message)
+		private void HandleCallbackQuery(ITelegramBotClient client, CallbackQuery query)
 		{
+			var data = query.Data;
 			if (TryParseCommand(data, out var command)) {
 				var arguments = new RequestEventArgs {
 					ClientInfo = new ClientInfo {
-						ChatId = message.Chat.Id,
+						ChatId = query.From.Id,
 						BotClient = client,
-						UserId = message.From.Id
+						UserId = query.From.Id
 					},
 					Command = command.Value
 				};
-				OnGotCommandMessage.Invoke(this, arguments);
+				OnGotMessage.Invoke(this, arguments);
 			}
 		}
 
@@ -86,17 +84,19 @@ namespace MyBot.Bot
 		{
 			switch (message.Type) {
 				case MessageType.Text:
+					var arguments = new RequestEventArgs {
+						ClientInfo = new ClientInfo {
+							ChatId = message.Chat.Id,
+							BotClient = client,
+							UserId = message.From.Id
+						},
+					};
 					if (TryParseCommand(message.Text, out GameCommand? command)) {
-						var arguments = new RequestEventArgs {
-							ClientInfo = new ClientInfo {
-								ChatId = message.Chat.Id,
-								BotClient = client,
-								UserId = message.From.Id
-							},
-							Command = command.Value 
-						};
-						OnGotCommandMessage.Invoke(this, arguments);
+						arguments.Command = command.Value;
+					} else {
+						arguments.Text = message.Text;
 					}
+					OnGotMessage.Invoke(this, arguments);
 					break;
 				#region other content
 				case MessageType.Unknown:
@@ -145,6 +145,7 @@ namespace MyBot.Bot
 				case MessageType.UserShared:
 				case MessageType.ChatShared:
 				default:
+					client.SendTextMessageAsync(message.Chat.Id, "Я тебе не розумію, відьма");
 					break;
 					#endregion
 			}

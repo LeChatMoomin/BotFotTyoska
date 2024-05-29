@@ -16,7 +16,8 @@ namespace MyBot.Bot
 	public class RequestEventArgs
 	{
 		public ClientInfo ClientInfo { get; set; }
-		public GameCommand Command { get; set; }
+		public GameCommand? Command { get; set; }
+		public string Text { get; set; }
 	}
 
 	public class ClientInfo

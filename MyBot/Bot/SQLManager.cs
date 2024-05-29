@@ -7,9 +7,9 @@ namespace MyBot.DataBase
 {
 	public class SQLManager
 	{
-		const string DbUser = "Root";
+		const string DbUser = "root";
 		const string DbName = "MyDb";
-		const string DbPass = "961";
+		const string DbPass = "Master961GW";
 
 		public readonly string ConnectionString = 
 				$"server=localhost;" +
@@ -19,10 +19,13 @@ namespace MyBot.DataBase
 
 		public SQLManager() { }
 
+
+		#region Save
 		public void Save(PlayerData data)
 		{
 			try {
 				using (var connection = new MySqlConnection(ConnectionString)) {
+					connection.Open();
 					var saveCommand = $"UPDATE `{DbName}`.`Users` SET `State` = {(int)data.State} WHERE User_id = {data.Id};";
 					using (var reader = new MySqlCommand(saveCommand, connection).ExecuteReader()) {
 						if (reader.Read()) {
@@ -42,12 +45,8 @@ namespace MyBot.DataBase
 		{
 			try {
 				using (var connection = new MySqlConnection(ConnectionString)) {
-					var saveCommand = $"UPDATE `{DbName}`.`Users` SET `State` = {(int)data.State} WHERE User_id = {data.Id};";
-					using (var reader = new MySqlCommand(saveCommand, connection).ExecuteReader()) {
-						if (reader.Read()) {
-							SaveCharacter(connection, data);
-						}
-					}
+					connection.Open();
+					SaveCharacter(connection, data);
 					connection.Close();
 				}
 			} catch (Exception e) {
@@ -77,7 +76,9 @@ namespace MyBot.DataBase
 				Console.WriteLine(e.Message);
 			}
 		}
+		#endregion
 
+		#region Load
 		/// <summary>
 		/// Создает нового юзера, если не нашли существующего
 		/// </summary>
@@ -104,7 +105,21 @@ namespace MyBot.DataBase
 				Console.WriteLine(e.Message);
 				throw;
 			}
-			
+		}
+
+		public List<CharacterData> GetCharsForUser(long ownerId)
+		{
+			try {
+				using (var connection = new MySqlConnection(ConnectionString)) {
+					connection.Open();
+					var result = GetCharsForUser(connection,ownerId);
+					connection.Close();
+					return result;
+				}
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось загрузать персонажей, вот ошибка: {e.Message}");
+				throw;
+			}
 		}
 
 		private List<CharacterData> GetCharsForUser(MySqlConnection connection, long ownerId)
@@ -138,6 +153,67 @@ namespace MyBot.DataBase
 			return result;
 		}
 
+		public CharacterData GetCharacter(int id)
+		{
+			try {
+				using (var connection = new MySqlConnection(ConnectionString)) {
+					connection.Open();
+					var result = GetCharacter(connection, id);
+					connection.Close();
+					return result;
+				}
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось загрузить перса, вот ошибка: {e.Message}");
+				throw;
+			}
+		}
+
+		private CharacterData GetCharacter(MySqlConnection connection, int id)
+		{
+			try {
+				var loadCharactersCommand = $"SELECT * FROM Characters WHERE Character_id = {id}";
+				using (var reader = new MySqlCommand(loadCharactersCommand, connection).ExecuteReader()) {
+					if (reader.Read()) {
+						var data = new CharacterData {
+							Id = reader.GetInt32("Character_id"),
+							OwnerId = reader.GetInt64("Owner"),
+							Name = reader.GetString("Name"),
+							Level = reader.GetInt32("Level"),
+							Phy = reader.GetInt32("Phy"),
+							Str = reader.GetInt32("Str"),
+							Agi = reader.GetInt32("Agi"),
+							Int = reader.GetInt32("Int"),
+							Gold = reader.GetInt32("Gold"),
+							State = (CharacterState)reader.GetInt32("State"),
+							Weapon = GetItem(connection, reader.GetInt32("Weapons_Weapon_id"), Game.ItemSlot.Weapon),
+							Armor = GetItem(connection, reader.GetInt32("Armors_Armor_id"), Game.ItemSlot.Armor),
+							Potion = GetItem(connection, reader.GetInt32("Potions_Potion_id"), Game.ItemSlot.Potion),
+						};
+						return data;
+					}
+				}
+				return null;
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось загрузить перса, вот ошибка: {e.Message}");
+				throw;
+			}
+		}
+
+		public ItemData GetItem(int id, ItemSlot slot)
+		{
+			try {
+				using (var connection = new MySqlConnection(ConnectionString)) {
+					connection.Open();
+					var result = GetItem(connection, id, slot);
+					connection.Close();
+					return result;
+				}
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось сохраниться, вот ошибка: {e.Message}");
+				throw;
+			}
+		}
+
 		private ItemData GetItem(MySqlConnection connection, int id, ItemSlot slot)
 		{
 			var result = new ItemData { Id = id };
@@ -155,5 +231,26 @@ namespace MyBot.DataBase
 			}
 			return result;
 		}
+		#endregion
+
+		#region Delete
+		public void DeleteCharacter(int id)
+		{
+			try {
+				using (var connection = new MySqlConnection(ConnectionString)) {
+					connection.Open();
+					var command = $"DELETE FROM Characters WHERE Character_id = {id}";
+					using (var reader = new MySqlCommand(command, connection).ExecuteReader()) {
+						reader.Read();
+					}
+					connection.Close();
+				}
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось загрузить перса, вот ошибка: {e.Message}");
+				throw;
+			}
+		}
+
+		#endregion
 	}
 }
