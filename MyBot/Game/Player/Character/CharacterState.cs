@@ -7,12 +7,7 @@ namespace MyBot.Game
 		Home = 0,
 		Shop = 1,
 		School = 2,
-
-
-		Wait = 3,
-		Heat = 4,
-		Loot = 5,
-		Dead = 6,
+		Arena = 3
 	}
 
 	public enum CharacterAction
@@ -20,11 +15,7 @@ namespace MyBot.Game
 		GoHome = 0,
 		GoShop = 1,
 		GoSchool = 2,
-		GoDungeon = 3,
-
-		NextRoom = 4,
-		Loot = 5,
-		Die = 6,
+		GoArena = 3,
 	}
 
 	public class CharacterStateMachine
@@ -43,14 +34,14 @@ namespace MyBot.Game
 			state = (state, action) switch {
 				(CharacterState.Home, CharacterAction.GoSchool) => CharacterState.School, 
 				(CharacterState.Home, CharacterAction.GoShop) => CharacterState.Shop,
-				(CharacterState.Home, CharacterAction.GoDungeon) => CharacterState.Wait, 
+				(CharacterState.Home, CharacterAction.GoArena) => CharacterState.Arena, 
 				(CharacterState.School, CharacterAction.GoHome) => CharacterState.Home,
 				(CharacterState.Shop, CharacterAction.GoHome) => CharacterState.Home,
-				(CharacterState.Wait, CharacterAction.GoHome) => CharacterState.Home,
-				(CharacterState.Wait, CharacterAction.NextRoom) => CharacterState.Heat, 
-				(CharacterState.Heat, CharacterAction.Loot) => CharacterState.Loot, 
-				(CharacterState.Heat, CharacterAction.Die) => CharacterState.Dead,
-				(CharacterState.Loot, CharacterAction.Loot) => CharacterState.Wait,
+				(CharacterState.Arena, CharacterAction.GoHome) => CharacterState.Home,
+				//(CharacterState.School, CharacterAction.GoArena) => CharacterState.Arena, 
+				//(CharacterState.Shop, CharacterAction.GoArena) => CharacterState.Arena, 
+				//(CharacterState.Shop, CharacterAction.GoSchool) => CharacterState.School,
+				//(CharacterState.School, CharacterAction.GoShop) => CharacterState.Shop,
 				_ => state,
 			};
 		}

@@ -12,6 +12,9 @@ namespace MyBot.Game
 		private CharacterStateMachine StateMachine;
 		public event EventHandler<CharacterState> StateChanged;
 
+		public CharacterState CurrentState => StateMachine.CurrentState;
+		public int Id => Data.Id;
+
 		public Character(CharacterData data)
 		{
 			Data = new CharacterData(data);
@@ -25,7 +28,5 @@ namespace MyBot.Game
 		{
 			StateChanged.Invoke(this, newState);
 		}
-
-
 	}
 }

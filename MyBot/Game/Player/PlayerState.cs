@@ -7,7 +7,7 @@ namespace MyBot.Game
 		Greetings = 0,
 		CreatingNewChar = 1,
 		DeletingChar = 2,
-		WatchingCharList = 3,
+		InMenu = 3,
 		InGame = 4,
 		WatchingCharInfo = 5,
 	}
@@ -16,7 +16,7 @@ namespace MyBot.Game
 	{
 		Play = 0,
 		CreateChar = 1,
-		CharList = 3,
+		Menu = 3,
 		DeleteChar = 2,
 		CharInfo = 4,
 	}
@@ -37,12 +37,12 @@ namespace MyBot.Game
 			state = (state, action) switch {
 				(PlayerState.Greetings, PlayerAction.CreateChar) => PlayerState.CreatingNewChar,
 				(PlayerState.CreatingNewChar, PlayerAction.Play) => PlayerState.InGame,
-				(PlayerState.InGame, PlayerAction.CharList) => PlayerState.WatchingCharList,
+				(PlayerState.InGame, PlayerAction.Menu) => PlayerState.InMenu,
 				(PlayerState.InGame, PlayerAction.CharInfo) => PlayerState.WatchingCharInfo,
 				(PlayerState.WatchingCharInfo, PlayerAction.Play) => PlayerState.InGame,
-				(PlayerState.WatchingCharList, PlayerAction.Play) => PlayerState.InGame,
-				(PlayerState.DeletingChar, PlayerAction.CharList) => PlayerState.WatchingCharList,
-				(PlayerState.WatchingCharList, PlayerAction.DeleteChar) => PlayerState.DeletingChar,
+				(PlayerState.InMenu, PlayerAction.Play) => PlayerState.InGame,
+				(PlayerState.DeletingChar, PlayerAction.Menu) => PlayerState.InMenu,
+				(PlayerState.InMenu, PlayerAction.DeleteChar) => PlayerState.DeletingChar,
 				_ => state,
 			};
 			OnAction.Invoke(this, state);

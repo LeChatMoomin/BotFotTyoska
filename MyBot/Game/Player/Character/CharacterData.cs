@@ -1,4 +1,6 @@
-﻿namespace MyBot.Game
+﻿using System.Text;
+
+namespace MyBot.Game
 {
 	public class CharacterData
 	{
@@ -26,6 +28,33 @@
 			Potion = new ItemData(data.Potion);
 		}
 
+		//Точно доебутся
+		public override string ToString()
+		{
+				var builder = new StringBuilder();
+				builder.Append("Имя: ");
+				builder.Append(Name);
+				builder.Append("\nУровень: ");
+				builder.Append(Level);
+				builder.Append("\nТелосложение: ");
+				builder.Append(Phy);
+				builder.Append("\nСила: ");
+				builder.Append(Str);
+				builder.Append("\nЛовкость: ");
+				builder.Append(Agi);
+				builder.Append("\nИнтеллект: ");
+				builder.Append(Int);
+				builder.Append("\nГроши: ");
+				builder.Append(Gold);
+				builder.Append("\nОружие: ");
+				builder.Append(Weapon.Name);
+				builder.Append("\nОдежда: ");
+				builder.Append(Armor.Name);
+				builder.Append("\nФляга: ");
+				builder.Append(Potion.Name);
+				return builder.ToString();
+		}
+
 		public int Id { get; set; }
 		public long OwnerId { get; set; }
 		public string Name { get; set; }
@@ -39,5 +68,7 @@
 		public ItemData Weapon { get; set; }
 		public ItemData Armor { get; set; }
 		public ItemData Potion { get; set; }
+		//для сохранения состояний битвы
+		public int? CurrentEnemy { get; set; } = null;
 	}
 }

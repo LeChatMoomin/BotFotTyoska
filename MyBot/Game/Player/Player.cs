@@ -38,7 +38,7 @@
 						break;
 					case PlayerState.DeletingChar:
 						break;
-					case PlayerState.WatchingCharList:
+					case PlayerState.InMenu:
 						break;
 					case PlayerState.InGame:
 						break;

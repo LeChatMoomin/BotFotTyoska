@@ -6,7 +6,7 @@ namespace MyBot.Bot
 	{
 		//база
 		Start = -1,
-		MainMenu = 0,
+		Menu = 0,
 		CreateChar = 1,
 		DeleteChar = 2,
 		CharList = 3,
@@ -28,13 +28,11 @@ namespace MyBot.Bot
 		LearnPhy = 204,
 
 		//данж
-		GoDungeon = 300,
-		NextRoom = 301,
+		GoArena = 300,
 		//бой
-		Attack = 302,
-		Defence = 303,
-		UsePotion = 304,
-		Run = 305,
+		Attack = 301,
+		Defence = 302,
+		UsePotion = 303,
 	}
 
 	public static class CommandExtensions
@@ -44,7 +42,7 @@ namespace MyBot.Bot
 			result = command switch {
 				GameCommand.CreateChar => PlayerAction.CreateChar,
 				GameCommand.DeleteChar => PlayerAction.DeleteChar,
-				GameCommand.CharList => PlayerAction.CharList,
+				GameCommand.CharList => PlayerAction.Menu,
 				GameCommand.CharInfo => PlayerAction.CharInfo,
 				GameCommand.Play => PlayerAction.Play,
 				_ => null
@@ -56,10 +54,9 @@ namespace MyBot.Bot
 		{
 			result = command switch {
 				GameCommand.GoHome => CharacterAction.GoHome,
-				GameCommand.Run => CharacterAction.GoHome,
 				GameCommand.GoSchool => CharacterAction.GoSchool,
 				GameCommand.GoShop => CharacterAction.GoShop,
-				GameCommand.GoDungeon => CharacterAction.GoDungeon,
+				GameCommand.GoArena => CharacterAction.GoArena,
 				_ => null
 			};
 			return result != null;
