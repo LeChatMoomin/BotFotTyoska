@@ -3,7 +3,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MyBot.Game.Locations
 {
-	public class Home : Location
+	public class Arena : Location
 	{
 		public override List<InlineKeyboardButton> GetLocationButtons()
 		{

@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace MyBot.Game.Locations
 {
 	public class Shop : Location
 	{
-
+		public override List<InlineKeyboardButton> GetLocationButtons()
+		{
+			var result = base.GetLocationButtons();
+			//хуё моё
+			return result;
+		}
 	}
 }
