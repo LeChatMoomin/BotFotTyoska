@@ -28,7 +28,10 @@ namespace MyBot.Game
 			Potion = new ItemData(data.Potion);
 		}
 
+
 		//Точно доебутся
+		//Можно сказать, что такая реализация нужна для более удобного дебага
+		//т.к. этот метод используется дебагером для отображения инфы об экземпляре класса
 		public override string ToString()
 		{
 				var builder = new StringBuilder();

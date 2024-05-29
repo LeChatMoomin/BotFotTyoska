@@ -42,7 +42,7 @@ namespace MyBot.Bot
 			result = command switch {
 				GameCommand.CreateChar => PlayerAction.CreateChar,
 				GameCommand.DeleteChar => PlayerAction.DeleteChar,
-				GameCommand.CharList => PlayerAction.Menu,
+				GameCommand.Menu => PlayerAction.Menu,
 				GameCommand.CharInfo => PlayerAction.CharInfo,
 				GameCommand.Play => PlayerAction.Play,
 				_ => null

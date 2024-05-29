@@ -1,4 +1,6 @@
-﻿namespace MyBot.Game
+﻿using System.Linq;
+
+namespace MyBot.Game
 {
 	public class Player
 	{
@@ -26,6 +28,11 @@
 				Data.Characters.Add(character.GetData());
 			}
 			ActiveCharacter = character;
+		}
+
+		public void RemoveCharacter(string name)
+		{
+			Data.Characters.Remove(Data.Characters.First(c => c.Name == name));
 		}
 
 		private void OnStateChanged(object sender, PlayerState newState)

@@ -59,6 +59,7 @@ namespace MyBot.Bot
 				case UpdateType.ChatMember:
 				case UpdateType.ChatJoinRequest:
 				default:
+					await client.SendTextMessageAsync(update.Message.Chat.Id, "Я тебе не розумію, відьма");
 					break;
 					#endregion
 			}
@@ -66,18 +67,19 @@ namespace MyBot.Bot
 
 		private void HandleCallbackQuery(ITelegramBotClient client, CallbackQuery query)
 		{
-			var data = query.Data;
-			if (TryParseCommand(data, out var command)) {
-				var arguments = new RequestEventArgs {
-					ClientInfo = new ClientInfo {
-						ChatId = query.From.Id,
-						BotClient = client,
-						UserId = query.From.Id
-					},
-					Command = command.Value
-				};
-				OnGotMessage.Invoke(this, arguments);
+			var arguments = new RequestEventArgs {
+				ClientInfo = new ClientInfo {
+					ChatId = query.From.Id,
+					BotClient = client,
+					UserId = query.From.Id
+				},
+			};
+			if (TryParseCommand(query.Data, out var command)) {
+				arguments.Command = command.Value;
+			} else  {
+				arguments.Text = query.Data;
 			}
+			OnGotMessage.Invoke(this, arguments);
 		}
 
 		private void HandleMessage(ITelegramBotClient client, Message message)
@@ -91,7 +93,7 @@ namespace MyBot.Bot
 							UserId = message.From.Id
 						},
 					};
-					if (TryParseCommand(message.Text, out GameCommand? command)) {
+					if (TryParseCommand(message.Text, out var command)) {
 						arguments.Command = command.Value;
 					} else {
 						arguments.Text = message.Text;
@@ -145,7 +147,7 @@ namespace MyBot.Bot
 				case MessageType.UserShared:
 				case MessageType.ChatShared:
 				default:
-					client.SendTextMessageAsync(message.Chat.Id, "Я тебе не розумію, відьма");
+					client.SendTextMessageAsync(message.Chat.Id, "Непогана спроба, розумник");
 					break;
 					#endregion
 			}

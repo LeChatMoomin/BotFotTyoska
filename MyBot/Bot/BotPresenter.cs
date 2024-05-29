@@ -10,7 +10,7 @@
 			Model = new BotModel();
 			View = new BotView();
 
-			View.OnGotMessage += Model.HandleMessage;
+			View.OnGotMessage += Model.Update;
 			Model.OnReadyToResponse += View.SendResponse;
 		}
 	}

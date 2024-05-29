@@ -37,12 +37,18 @@ namespace MyBot.Game
 			state = (state, action) switch {
 				(PlayerState.Greetings, PlayerAction.CreateChar) => PlayerState.CreatingNewChar,
 				(PlayerState.CreatingNewChar, PlayerAction.Play) => PlayerState.InGame,
+				(PlayerState.CreatingNewChar, PlayerAction.Menu) => PlayerState.InMenu,
 				(PlayerState.InGame, PlayerAction.Menu) => PlayerState.InMenu,
-				(PlayerState.InGame, PlayerAction.CharInfo) => PlayerState.WatchingCharInfo,
+				(PlayerState.InMenu, PlayerAction.CharInfo) => PlayerState.WatchingCharInfo,
 				(PlayerState.WatchingCharInfo, PlayerAction.Play) => PlayerState.InGame,
 				(PlayerState.InMenu, PlayerAction.Play) => PlayerState.InGame,
 				(PlayerState.DeletingChar, PlayerAction.Menu) => PlayerState.InMenu,
 				(PlayerState.InMenu, PlayerAction.DeleteChar) => PlayerState.DeletingChar,
+				(PlayerState.InMenu, PlayerAction.CreateChar) => PlayerState.CreatingNewChar,
+				(PlayerState.WatchingCharInfo, PlayerAction.Menu) => PlayerState.InMenu,
+				(PlayerState.DeletingChar, PlayerAction.CharInfo) => PlayerState.WatchingCharInfo,
+				(PlayerState.DeletingChar, PlayerAction.CreateChar) => PlayerState.CreatingNewChar,
+				(PlayerState.WatchingCharInfo, PlayerAction.CreateChar) => PlayerState.CreatingNewChar,
 				_ => state,
 			};
 			OnAction.Invoke(this, state);
