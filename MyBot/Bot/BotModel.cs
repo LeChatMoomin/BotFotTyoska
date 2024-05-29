@@ -83,7 +83,7 @@ namespace MyBot.Bot
 							buttons: new[] { Buttons.CreateChar }
 						);
 					} else {
-						Response(args.ClientInfo, "Куда вот ты стартуешь?\nМы уже начали, играй давай");
+						Response(args.ClientInfo, "Куда вот ты стартуешь?\nМы уже начали, играй давай", buttons: new[] { Buttons.Menu });
 					}
 					break;
 				default:
