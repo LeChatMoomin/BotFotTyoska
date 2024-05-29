@@ -19,7 +19,6 @@ namespace MyBot.DataBase
 
 		public SQLManager() { }
 
-
 		#region Save
 		public void Save(PlayerData data)
 		{
@@ -70,10 +69,53 @@ namespace MyBot.DataBase
 					$"'State' = {(int)data.State}, " +
 					$"'Gold' = {data.Gold} " +
 					$"WHERE Character_id = {data.Id}";
-
 				var reader = new MySqlCommand(updateCharCommand, connection).ExecuteReader();
+				reader.Read();
 			} catch (Exception e) {
 				Console.WriteLine(e.Message);
+			}
+		}
+
+		public void SaveNewPlayer(PlayerData data)
+		{
+			try {
+				using (var connection = new MySqlConnection(ConnectionString)) {
+					connection.Open();
+					var command = $"Insert into users Values ({data.Id},{(int)data.State})";
+					var reader = new MySqlCommand(command, connection).ExecuteReader();
+					reader.Read();
+					connection.Close();
+				}
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось создать игрока вот ошибка: {e.Message}");
+			}
+		}
+
+		public void CreateNewCharacter(CharacterData data)
+		{
+			try {
+				using (var connection = new MySqlConnection(ConnectionString)) {
+					connection.Open();
+					var command = $"Insert into characters Values (" +
+						$"{data.Id}," +
+						$"{data.OwnerId}," +
+						$"'{data.Name}'," +
+						$"{data.Level}," +
+						$"{data.Phy}," +
+						$"{data.Str}," +
+						$"{data.Agi}," +
+						$"{data.Int}," +
+						$"{(int)data.State}," +
+						$"{data.Gold}," +
+						$"{data.Armor.Id}," +
+						$"{data.Weapon.Id}," +
+						$"{data.Potion.Id})";
+					var reader = new MySqlCommand(command, connection).ExecuteReader();
+					reader.Read();
+					connection.Close();
+				}
+			} catch (Exception e) {
+				Console.WriteLine($"Не удалось создать перса вот ошибка: {e.Message}");
 			}
 		}
 		#endregion
@@ -96,6 +138,8 @@ namespace MyBot.DataBase
 						if (reader.Read()) {
 							data.State = (PlayerState)reader.GetInt32("State");
 							data.Characters = GetCharsForUser(connection, id);
+						} else {
+							SaveNewPlayer(data);
 						}
 					}
 					connection.Close();
@@ -126,7 +170,7 @@ namespace MyBot.DataBase
 		{
 			var result = new List<CharacterData>();
 			try {
-				var loadCharactersCommand = $"SELECT * FROM Characters WHERE Character_id = @Id AND Owner = {ownerId}";
+				var loadCharactersCommand = $"SELECT * FROM Characters WHERE Owner = {ownerId}";
 				using (var reader = new MySqlCommand(loadCharactersCommand, connection).ExecuteReader()) {
 					while (reader.Read()) {
 						var data = new CharacterData {
@@ -233,7 +277,6 @@ namespace MyBot.DataBase
 		}
 		#endregion
 
-		#region Delete
 		public void DeleteCharacter(int id)
 		{
 			try {
@@ -246,11 +289,9 @@ namespace MyBot.DataBase
 					connection.Close();
 				}
 			} catch (Exception e) {
-				Console.WriteLine($"Не удалось загрузить перса, вот ошибка: {e.Message}");
+				Console.WriteLine($"Не удалось удалить перса, вот ошибка: {e.Message}");
 				throw;
 			}
 		}
-
-		#endregion
 	}
 }
