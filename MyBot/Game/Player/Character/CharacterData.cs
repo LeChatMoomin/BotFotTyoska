@@ -58,6 +58,17 @@ namespace MyBot.Game
 				return builder.ToString();
 		}
 
+		public override bool Equals(object obj)
+		{
+			if (obj is CharacterData) {
+				var data = obj as CharacterData;
+				return Id == data.Id &&
+					Name == data.Name &&
+					OwnerId == data.OwnerId;
+			}
+			return false;
+		}
+
 		public int Id { get; set; }
 		public long OwnerId { get; set; }
 		public string Name { get; set; }

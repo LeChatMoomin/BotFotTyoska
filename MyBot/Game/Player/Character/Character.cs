@@ -27,6 +27,8 @@ namespace MyBot.Game
 			};
 		}
 
+		public Monster CurrentEnemy;
+
 		public void TakeAction(CharacterAction action) => StateMachine.Act(action);
 
 		public CharacterData GetData() => new CharacterData(Data);

@@ -8,10 +8,10 @@ namespace MyBot.Game
 {
 	public abstract class Monster
 	{
-		public string Name { get; }
+		public string Name { get; set; }
 		private int health;
 		public int Health => health;
-		public event EventHandler Died;
+		public event EventHandler<int> Died;
 
 		public Monster()
 		{
@@ -20,7 +20,10 @@ namespace MyBot.Game
 
 		public void TakeDamage(int value)
 		{
-
+			health -= value;
+			if (health < 0) {
+				Died.Invoke(this, health);
+			}
 		}
 	}
 

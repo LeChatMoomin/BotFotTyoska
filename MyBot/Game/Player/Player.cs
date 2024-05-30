@@ -27,7 +27,7 @@ namespace MyBot.Game
 		public void SetActiveCharacter(Character character)
 		{
 			if (!Data.Characters.Contains(character.GetData())) {
-				Data.Characters.Add(character.GetData());
+				Data.Characters.Add(character.GetData());	
 			}
 			ActiveCharacter = character;
 		}

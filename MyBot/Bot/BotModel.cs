@@ -100,72 +100,119 @@ namespace MyBot.Bot
 					break;
 
 				case GameCommand.LearnStr:
-					if (player.ActiveCharacter.TryLearn(CharacterStat.Str)) {
-						Response(args.ClientInfo, "");
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
+						if (player.ActiveCharacter.TryLearn(CharacterStat.Str)) {
+							Response(args.ClientInfo, "");
+						} else {
+							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						}
+						ResumeGame(player.ActiveCharacter, args);
 					} else {
-						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						Response(args.ClientInfo, "Не роби так");
 					}
-					ResumeGame(player.ActiveCharacter, args);
 					break;
 				case GameCommand.LearnAgi:
-					if (player.ActiveCharacter.TryLearn(CharacterStat.Agi)) {
-						Response(args.ClientInfo, "");
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
+						if (player.ActiveCharacter.TryLearn(CharacterStat.Agi)) {
+							Response(args.ClientInfo, "");
+						} else {
+							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						}
+						ResumeGame(player.ActiveCharacter, args);
 					} else {
-						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						Response(args.ClientInfo, "Не роби так");
 					}
-					ResumeGame(player.ActiveCharacter, args);
 					break;
 				case GameCommand.LearnInt:
-					if (player.ActiveCharacter.TryLearn(CharacterStat.Int)) {
-						Response(args.ClientInfo, "");
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
+						if (player.ActiveCharacter.TryLearn(CharacterStat.Int)) {
+							Response(args.ClientInfo, "");
+						} else {
+							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						}
+						ResumeGame(player.ActiveCharacter, args);
 					} else {
-						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						Response(args.ClientInfo, "Не роби так");
 					}
-					ResumeGame(player.ActiveCharacter, args);
 					break;
 				case GameCommand.LearnPhy:
-					if (player.ActiveCharacter.TryLearn(CharacterStat.Phy)) {
-						Response(args.ClientInfo, "Препод бьет тебя палкой по жопе и она становится крепче");
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
+						if (player.ActiveCharacter.TryLearn(CharacterStat.Phy)) {
+							Response(args.ClientInfo, "");
+						} else {
+							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						}
+						ResumeGame(player.ActiveCharacter, args);
 					} else {
-						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+						Response(args.ClientInfo, "Не роби так");
 					}
-					ResumeGame(player.ActiveCharacter, args);
 					break;
 
 				case GameCommand.BuyArmor:
-					if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Armor)) {
-						Response(args.ClientInfo, "Поздравляю с покупкой наряда");
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Shop) {
+						if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Armor)) {
+							Response(args.ClientInfo, "Поздравляю с покупкой наряда");
+						} else {
+							Response(args.ClientInfo, "Извини, но мы живем при капитализме, чтоб одеться, нужны бабки");
+						}
+						ResumeGame(player.ActiveCharacter, args);
 					} else {
-						Response(args.ClientInfo, "Извини, но мы живем при капитализме, чтоб одеться, нужны бабки");
+						Response(args.ClientInfo, "Не роби так");
 					}
-					ResumeGame(player.ActiveCharacter, args);
 					break;
 				case GameCommand.BuyWeapon:
-					if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Weapon)) {
-						Response(args.ClientInfo, "Поздравляю с покупкой средства самообороны");
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Shop) {
+						if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Weapon)) {
+							Response(args.ClientInfo, "Поздравляю с покупкой средства самообороны");
+						} else {
+							Response(args.ClientInfo, "Мы живем при капитализме, чтобы быть в безопасности, нужны бабки");
+						}
+						ResumeGame(player.ActiveCharacter, args);
 					} else {
-						Response(args.ClientInfo, "Мы живем при капитализме, чтобы быть в безопасности, нужны бабки");
+						Response(args.ClientInfo, "Не роби так");
 					}
-					ResumeGame(player.ActiveCharacter, args);
 					break;
 				case GameCommand.BuyPotion:
-					if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Potion)) {
-						Response(args.ClientInfo, "Поздравляю с покупкой алкоголя");
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Shop) {
+						if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Potion)) {
+							Response(args.ClientInfo, "Поздравляю с покупкой алкоголя");
+						} else {
+							Response(args.ClientInfo, "Мы живем при капитализме, чтобы выпить, нужны бабки");
+						}
+						ResumeGame(player.ActiveCharacter, args);
 					} else {
-						Response(args.ClientInfo, "Мы живем при капитализме, чтобы выпить, нужны бабки");
+						Response(args.ClientInfo, "Не роби так");
 					}
-					ResumeGame(player.ActiveCharacter, args);
+					
 					break;
 				
 				case GameCommand.Attack:
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Arena) {
+
+						ResumeGame(player.ActiveCharacter, args);
+					} else {
+
+						Response(args.ClientInfo, "Не роби так");
+					}
 					//хуй пойми ваще че писать сюда
-					ResumeGame(player.ActiveCharacter, args);
 					break;
 				case GameCommand.Defence:
-					ResumeGame(player.ActiveCharacter, args);
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Arena) {
+						
+						ResumeGame(player.ActiveCharacter, args);
+					} else {
+
+						Response(args.ClientInfo, "Не роби так");
+					}
 					break;
 				case GameCommand.UsePotion:
-					ResumeGame(player.ActiveCharacter, args);
+					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Arena) {
+						
+						ResumeGame(player.ActiveCharacter, args);
+					} else {
+
+						Response(args.ClientInfo, "Не роби так");
+					}
 					break;
 				default:
 					break;
