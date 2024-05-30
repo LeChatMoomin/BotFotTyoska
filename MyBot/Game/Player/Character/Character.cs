@@ -10,6 +10,7 @@ namespace MyBot.Game
 		private int maxHealth;
 		private int damage;
 
+
 		public Monster CurrentEnemy;
 
 		public CharacterState CurrentState => StateMachine.CurrentState;
@@ -41,6 +42,8 @@ namespace MyBot.Game
 			maxHealth = 5 + Data.Phy * 2 + Data.Armor.Value;
 		}
 
+		public void ResetHP() => currentHealth = maxHealth;
+
 		public void UpdateDamage()
 		{
 			damage = 2 + Data.Str * 3 + Data.Weapon.Value;
@@ -55,22 +58,21 @@ namespace MyBot.Game
 
 		public CharacterData GetData() => new CharacterData(Data);
 
-		public bool TryBuyItem(ItemSlot slot)
+		public bool TryBuyItem(ItemData data)
 		{
-			var cost = 0;
-			switch (slot) {
-				case ItemSlot.Weapon:
-					cost = Data.Weapon.Cost + ItemData.CostIncrease;
-					break;
-				case ItemSlot.Armor:
-					cost = Data.Armor.Cost + ItemData.CostIncrease;
-					break;
-				case ItemSlot.Potion:
-					cost = Data.Potion.Cost + ItemData.CostIncrease;
-					break;
-			}
-			if (Data.Gold >= cost) {
-				Data.Gold -= cost;
+			if (Data.Gold >= data.Cost) {
+				Data.Gold -= data.Cost;
+				switch (data.Slot) {
+					case ItemSlot.Weapon:
+						Data.Weapon = new ItemData(data);
+						break;
+					case ItemSlot.Armor:
+						Data.Armor = new ItemData(data);
+						break;
+					case ItemSlot.Potion:
+						Data.Potion = new ItemData(data);
+						break;
+				}
 				return true;
 			}
 			return false;

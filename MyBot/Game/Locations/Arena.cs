@@ -21,9 +21,9 @@ namespace MyBot.Game
 
 		private string GenerateDescription()
 		{
-			var builder = new StringBuilder("Добро пожаловать на ♂арену♂.\nТут много кого уже победили");
+			var builder = new StringBuilder("Добро пожаловать на ♂АРЕНУ♂");
 			builder.Append($"\nТвой сегодняшний противник: {Monster.Name}");
-			builder.Append($"\nЕго здоровье: {Monster.CurrentHealth}");
+			builder.Append($"\nЕГО здоровье: {Monster.CurrentHealth}");
 			builder.Append($"\nЧе делать будем?");
 			return builder.ToString();
 		}

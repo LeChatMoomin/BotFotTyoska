@@ -86,21 +86,21 @@ namespace MyBot.Bot
 				if (character.CurrentState == CharacterState.Shop) {
 					switch (command) {
 						case LocationCommand.BuyArmor:
-							if (character.TryBuyItem(ItemSlot.Armor)) {
+							if (character.TryBuyItem(SQLManager.GetItem(character.GetData().Armor.Id + 1, ItemSlot.Armor))) {
 								Response(args.ClientInfo, "Поздравляю с покупкой наряда");
 							} else {
 								Response(args.ClientInfo, "Извини, но мы живем при капитализме, чтоб одеться, нужны бабки");
 							}
 							break;
 						case LocationCommand.BuyWeapon:
-							if (character.TryBuyItem(ItemSlot.Weapon)) {
+							if (character.TryBuyItem(SQLManager.GetItem(character.GetData().Weapon.Id + 1, ItemSlot.Weapon))) {
 								Response(args.ClientInfo, "Поздравляю с покупкой средства самообороны");
 							} else {
 								Response(args.ClientInfo, "Мы живем при капитализме, чтобы быть в безопасности, нужны бабки");
 							}
 							break;
 						case LocationCommand.BuyPotion:
-							if (character.TryBuyItem(ItemSlot.Potion)) {
+							if (character.TryBuyItem(SQLManager.GetItem(character.GetData().Potion.Id + 1, ItemSlot.Potion))) {
 								Response(args.ClientInfo, "Поздравляю с покупкой алкоголя");
 							} else {
 								Response(args.ClientInfo, "Мы живем при капитализме, чтобы выпить, нужны бабки");
@@ -151,10 +151,12 @@ namespace MyBot.Bot
 					var enemy = character.CurrentEnemy;
 					switch (command) {
 						case LocationCommand.Attack:
-							character.CurrentEnemy.TakeDamage(character.Damage);
+							enemy.TakeDamage(character.Damage);
+							Response(args.ClientInfo, $"ТЫ АТАКУЕШЬ \n{enemy.Name} ПОЛУЧАЕТ {character.Damage} УРОНА ПРЯМО В ГОЛОВУ");
+							Response(args.ClientInfo, $"{enemy.Name} АТАКУЕТ И ТЫ ПОЛУЧАЕШЬ {enemy.Damage} УРОНА ПО ЛИЦУ");
 							break;
 						case LocationCommand.Defence:
-
+							Response(args.ClientInfo, $"{enemy.Name} АТАКУЕТ НО ТЫ БЛОКИРУЕШЬ, ТАК МОЖЕТ ПРОДОЛЖАТЬСЯ БЕСКОНЕЧНО...");
 							break;
 						case LocationCommand.UsePotion:
 							break;
@@ -185,13 +187,9 @@ namespace MyBot.Bot
 
 		private void HandleTextMessage(Player player, RequestEventArgs args)
 		{
-			//вот эта вот хуйня подойдет для фикса
-			if (player.GetData().Characters.Count == 0) {
-				player.TakeAction(PlayerAction.CreateChar);
-			}
 			switch (player.CurrentState) {
 				case PlayerState.Greetings:
-					Response(args.ClientInfo, "Да, да, привет, ага\nЧтобы играть, нужен перс", buttons: new[] { Buttons.CreateChar});
+					Response(args.ClientInfo, "Чтобы играть, нужен перс", buttons: new[] { Buttons.CreateChar});
 					break;
 				case PlayerState.CreatingNewChar:
 					CreateNewCharForPlayer(player, args.Text);
@@ -229,7 +227,7 @@ namespace MyBot.Bot
 			var location = character.GetCurrentLocation();
 			Response(
 				args.ClientInfo,
-				$"{location.Description}\nТвои текущие статы:\n{character.GetData()}",
+				$"Твои текущие статы:\n{character.GetData()}\n\n{location.Description}",
 				location.ImageUrl,
 				location.GetButtons()
 			);

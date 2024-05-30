@@ -2,6 +2,13 @@
 {
 	public class ItemData
 	{
+
+		public int Id { get; set; }
+		public string Name { get; set; }
+		public int Value { get; set; }
+		public int Cost { get; set; }
+		public ItemSlot Slot { get; set; }
+
 		public ItemData() { }
 
 		/// <summary>
@@ -17,11 +24,5 @@
 			Cost = data.Cost;
 		}
 
-		public int Id { get; set; }
-		public string Name { get; set; }
-		public int Value { get; set; }
-		public int Cost { get; set; }
-
-		public static int CostIncrease => 3;
 	}
 }

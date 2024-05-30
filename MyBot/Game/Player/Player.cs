@@ -30,7 +30,6 @@ namespace MyBot.Game
 				Data.Characters.Add(character.GetData());	
 			}
 			ActiveCharacter = character;
-			Data.ActiveCharacter = character.Id;
 		}
 
 		public void RemoveCharacter(string name)
