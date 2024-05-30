@@ -31,23 +31,48 @@ namespace MyBot.Game
 
 		public CharacterData GetData() => new CharacterData(Data);
 
-		public void Learn(CharacterStat stat)
+		public bool TryUpgradeItem(ItemSlot slot)
 		{
-			Data.Gold--;
-			switch (stat) {
-				case CharacterStat.Str:
-					Data.Str++;
+			var cost = 0;
+			switch (slot) {
+				case ItemSlot.Weapon:
+					cost = Data.Weapon.Cost + ItemData.CostIncrease;
 					break;
-				case CharacterStat.Agi:
-					Data.Agi++;
+				case ItemSlot.Armor:
+					cost = Data.Armor.Cost + ItemData.CostIncrease;
 					break;
-				case CharacterStat.Phy:
-					Data.Phy++;
-					break;
-				case CharacterStat.Int:
-					Data.Int++;
+				case ItemSlot.Potion:
+					cost = Data.Potion.Cost + ItemData.CostIncrease;
 					break;
 			}
+			if (Data.Gold >= cost) {
+				Data.Gold -= cost;
+				return true;
+			}
+			return false;
+		}
+
+		public bool TryLearn(CharacterStat stat)
+		{
+			if (Data.Gold > 0) {
+				Data.Gold--;
+				switch (stat) {
+					case CharacterStat.Str:
+						Data.Str++;
+						break;
+					case CharacterStat.Agi:
+						Data.Agi++;
+						break;
+					case CharacterStat.Phy:
+						Data.Phy++;
+						break;
+					case CharacterStat.Int:
+						Data.Int++;
+						break;
+				}
+				return true;
+			}
+			return false;
 		}
 	}
 
