@@ -12,6 +12,8 @@ namespace MyBot.Game
 		public int MaxHealth { get; set; }
 		public int Damage { get; set; }
 
+		public int Reward { get; set; }
+
 		private int health;
 		public int CurrentHealth => health;
 		public event EventHandler<int> Died;
@@ -32,9 +34,9 @@ namespace MyBot.Game
 
 	public static class Monsters
 	{
-		public static Monster Pudge => new Pudge() { Name = "ПУДГЕ", MaxHealth = 20, Damage = 8 };
-		public static Monster Ghoul => new Pudge() { Name = "ГУЛЯШ", MaxHealth = 3, Damage = 2 };
-		public static Monster Wiwern => new Pudge() { Name = "АЛКОГОЛЬНОЕ ИСПАРЕНИЕ", MaxHealth = 6, Damage = 3 };
-		public static Monster Dino => new Pudge() { Name = "ПРОКРАСТИНАТОР", MaxHealth = 10, Damage = 6 };
+		public static Monster Pudge => new Pudge() { Name = "ПУДГЕ", MaxHealth = 20, Damage = 8, Reward = 1000 };
+		public static Monster Ghoul => new Pudge() { Name = "ГУЛЯШ", MaxHealth = 13, Damage = 3, Reward = 30};
+		public static Monster Wiwern => new Pudge() { Name = "АЛКОГОЛЬНОЕ ИСПАРЕНИЕ", MaxHealth = 3, Damage = 1, Reward = 10};
+		public static Monster Dino => new Pudge() { Name = "ПРОКРАСТИНАТОР", MaxHealth = 10, Damage = 6, Reward = 20 };
 	}
 }
