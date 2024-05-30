@@ -25,7 +25,8 @@ namespace MyBot.DataBase
 			try {
 				using (var connection = new MySqlConnection(ConnectionString)) {
 					connection.Open();
-					var saveCommand = $"UPDATE `{DbName}`.`Users` SET `State` = {(int)data.State} WHERE User_id = {data.Id}";
+					var activeChar = data.ActiveCharacter.HasValue ? data.ActiveCharacter.Value.ToString() : "null";
+					var saveCommand = $"UPDATE `{DbName}`.`Users` SET `State` = {(int)data.State}, 'Active_Character_id' = {activeChar} WHERE User_id = {data.Id}";
 					using (var reader = new MySqlCommand(saveCommand, connection).ExecuteReader()) {
 						if (reader.Read()) {
 							for (int i = 0; i < data.Characters.Count; i++) {
@@ -72,7 +73,7 @@ namespace MyBot.DataBase
 			try {
 				using (var connection = new MySqlConnection(ConnectionString)) {
 					connection.Open();
-					var command = $"Insert into users Values ({data.Id},{(int)data.State})";
+					var command = $"Insert into users Values ({data.Id},{(int)data.State},null)";
 					var reader = new MySqlCommand(command, connection).ExecuteReader();
 					reader.Read();
 					connection.Close();
@@ -129,6 +130,9 @@ namespace MyBot.DataBase
 						if (reader.Read()) {
 							data.State = (PlayerState)reader.GetInt32("State");
 							data.Characters = GetCharsForUser(id);
+							if (data.Characters.Count > 0) {
+								data.ActiveCharacter = reader.GetInt32("Active_Character_id");
+							}
 						} else {
 							SaveNewPlayer(data);
 						}

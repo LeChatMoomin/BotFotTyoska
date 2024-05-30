@@ -8,7 +8,7 @@ namespace MyBot.Game
 		public long Id { get; set; }
 		public PlayerState State { get; set; } = PlayerState.Greetings;
 		public List<CharacterData> Characters { get; set; } = new List<CharacterData>();
-		public int ActiveCharacter { get; set; }
+		public int? ActiveCharacter { get; set; }
 
 		public PlayerData() { }
 

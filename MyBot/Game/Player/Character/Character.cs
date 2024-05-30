@@ -6,14 +6,23 @@ namespace MyBot.Game
 	{
 		private CharacterData Data;
 		private CharacterStateMachine StateMachine;
+		private int currentHealth;
+		private int maxHealth;
+		private int damage;
+
+		public Monster CurrentEnemy;
 
 		public CharacterState CurrentState => StateMachine.CurrentState;
 		public int Id => Data.Id;
+		public int CurrentHealth => currentHealth;
+		public int Damage => damage;
 
 		public Character(CharacterData data)
 		{
 			Data = new CharacterData(data);
 			StateMachine = new CharacterStateMachine(data.State);
+			UpdateMaxHealth();
+			UpdateDamage();
 		}
 
 		public Location GetCurrentLocation()
@@ -27,13 +36,26 @@ namespace MyBot.Game
 			};
 		}
 
-		public Monster CurrentEnemy;
+		public void UpdateMaxHealth()
+		{
+			maxHealth = 5 + Data.Phy * 2 + Data.Armor.Value;
+		}
+
+		public void UpdateDamage()
+		{
+			damage = 2 + Data.Str * 3 + Data.Weapon.Value;
+		}
+
+		public void UsePotion()
+		{
+			currentHealth += Data.Potion.Value;
+		}
 
 		public void TakeAction(CharacterAction action) => StateMachine.Act(action);
 
 		public CharacterData GetData() => new CharacterData(Data);
 
-		public bool TryUpgradeItem(ItemSlot slot)
+		public bool TryBuyItem(ItemSlot slot)
 		{
 			var cost = 0;
 			switch (slot) {
@@ -72,6 +94,7 @@ namespace MyBot.Game
 						Data.Int++;
 						break;
 				}
+				Data.Level++;
 				return true;
 			}
 			return false;

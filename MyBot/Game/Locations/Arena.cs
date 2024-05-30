@@ -7,7 +7,7 @@ namespace MyBot.Game
 	public class Arena : Location
 	{
 		public override string ImageUrl => "https://raw.githubusercontent.com/GeonAndKotN/BotInTg/master/arena.jpg";
-		public override string Description => GenerateDescription(Monsters.Pudge);
+		public override string Description => GenerateDescription();
 		public override List<InlineKeyboardButton> GetButtons()
 		{
 			var result = new List<InlineKeyboardButton> {
@@ -19,10 +19,11 @@ namespace MyBot.Game
 			return result;
 		}
 
-		private string GenerateDescription(Monster monster)
+		private string GenerateDescription()
 		{
 			var builder = new StringBuilder("Добро пожаловать на ♂арену♂.\nТут много кого уже победили");
-			builder.Append($"\nТвой сегодняшний противник: {monster.Name}");
+			builder.Append($"\nТвой сегодняшний противник: {Monster.Name}");
+			builder.Append($"\nЕго здоровье: {Monster.CurrentHealth}");
 			builder.Append($"\nЧе делать будем?");
 			return builder.ToString();
 		}

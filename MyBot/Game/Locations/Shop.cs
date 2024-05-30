@@ -6,7 +6,7 @@ namespace MyBot.Game
 	public class Shop : Location
 	{
 		public override string ImageUrl => "https://raw.githubusercontent.com/GeonAndKotN/BotInTg/master/shop.jpg";
-		public override string Description => "Добро пожаловать в ☭Магазин☭\nЧто желаешь обновить?";
+		public override string Description => "Добро пожаловать в ☭Магазин☭\nЧто хотим улучшить?";
 		public override List<InlineKeyboardButton> GetButtons()
 		{
 			var result = new List<InlineKeyboardButton> {

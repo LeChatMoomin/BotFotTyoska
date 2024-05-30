@@ -15,9 +15,68 @@ namespace MyBot.Game
 
 	public static class Locations
 	{
-		public static Location Home => new Home();
-		public static Location School => new School();
-		public static Location Shop => new Shop();
-		public static Location Arena => new Arena();
+		public static Location Home = new Home();
+		public static Location School = new School();
+		public static Location Shop = new Shop();
+		public static Location Arena = new Arena();
+	}
+
+	public enum LocationCommand
+	{
+		//ларёк
+		BuyArmor = 101,
+		BuyWeapon = 102,
+		BuyPotion = 103,
+
+		//ппк
+		LearnStr = 201,
+		LearnAgi = 202,
+		LearnInt = 203,
+		LearnPhy = 204,
+
+		//бой
+		Attack = 301,
+		Defence = 302,
+		UsePotion = 303,
+	}
+
+	public static class LocationCommandExtensions
+	{
+		public static bool IsShopCommand(this LocationCommand command)
+		{
+			switch (command) {
+				case LocationCommand.BuyArmor:
+				case LocationCommand.BuyWeapon:
+				case LocationCommand.BuyPotion:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		public static bool IsSchoolCommand(this LocationCommand command)
+		{
+			switch (command) {
+				case LocationCommand.LearnStr:
+				case LocationCommand.LearnAgi:
+				case LocationCommand.LearnInt:
+				case LocationCommand.LearnPhy:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		public static bool IsArenaCommand(this LocationCommand command)
+		{
+			switch (command) {
+				case LocationCommand.Attack:
+				case LocationCommand.Defence:
+				case LocationCommand.UsePotion:
+					return true;
+				default:
+					return false;
+			}
+		}
 	}
 }

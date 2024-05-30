@@ -61,5 +61,25 @@ namespace MyBot.Bot
 			};
 			return result != null;
 		}
+
+		public static bool IsLocationCommand(this GameCommand command, out LocationCommand? result)
+		{
+			result = command switch {
+				GameCommand.BuyArmor => LocationCommand.BuyArmor,
+				GameCommand.BuyWeapon => LocationCommand.BuyWeapon,
+				GameCommand.BuyPotion => LocationCommand.BuyPotion,
+
+				GameCommand.LearnStr => LocationCommand.LearnStr,
+				GameCommand.LearnInt => LocationCommand.LearnInt,
+				GameCommand.LearnPhy => LocationCommand.LearnPhy,
+				GameCommand.LearnAgi => LocationCommand.LearnAgi,
+
+				GameCommand.Attack => LocationCommand.Attack,
+				GameCommand.Defence => LocationCommand.Defence,
+				GameCommand.UsePotion => LocationCommand.UsePotion,
+				_ => null
+			};
+			return result != null;
+		}
 	}
 }

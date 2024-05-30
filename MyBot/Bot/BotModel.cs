@@ -23,18 +23,24 @@ namespace MyBot.Bot
 				player = new Player(data);
 				LoadedPlayers.Add(userId, player);
 			}
-			
+			if (player.ActiveCharacter == null) {
+				var charsData = player.GetData().Characters;
+				if (charsData.Count > 0) {
+					player.SetActiveCharacter(new Character(charsData.Last()));
+				} else if (args.Command != GameCommand.CreateChar && (player.CurrentState != PlayerState.CreatingNewChar || string.IsNullOrEmpty(args.Text))) {
+					Response(args.ClientInfo, "Чтобы играть, нужен перс, введи имя и всё будет хорошо");
+					player.TakeAction(PlayerAction.CreateChar);
+					return;
+				}
+			}
 
 			if (args.Command.HasValue) {
-				if (args.Command.Value.IsPlayerAction(out var playerAction)) {					//Если команда - это действие игрока
+				if (args.Command.Value.IsPlayerAction(out var playerAction)) {                  //Если команда - это действие игрока
 					HandlePlayerAction(player, playerAction.Value, args);
 				} else if (args.Command.Value.IsCharacterAction(out var characterAction)) {     //если это действие перса
-					if (player.ActiveCharacter == null) {
-						Response(args.ClientInfo, "Чтобы играть, нужен перс", buttons: new[] { Buttons.CreateChar });
-						return;
-					} else {
-						HandleCharacterAction(player.ActiveCharacter, characterAction.Value, args);
-					}
+					HandleCharacterAction(player.ActiveCharacter, characterAction.Value, args);
+				} else if (args.Command.Value.IsLocationCommand(out var locationCommad)) {
+					HandleLocationCommand(player.ActiveCharacter, locationCommad.Value, args);
 				} else {																		//остальные команды
 					HandleBaseCommand(player, args);
 				}
@@ -46,11 +52,7 @@ namespace MyBot.Bot
 
 		private void HandlePlayerAction(Player player, PlayerAction action, RequestEventArgs args)
 		{
-			if (player.ActiveCharacter == null) {
-				player.TakeAction(PlayerAction.CreateChar);
-			} else {
-				player.TakeAction(action);
-			}
+			player.TakeAction(action);
 			switch (player.CurrentState) {
 				case PlayerState.CreatingNewChar:
 					Response(args.ClientInfo, "Персонажу нужно имя, введи его и получишь результат");
@@ -75,13 +77,93 @@ namespace MyBot.Bot
 		private void HandleCharacterAction(Character character, CharacterAction action, RequestEventArgs args)
 		{
 			character.TakeAction(action);
-			var location = character.GetCurrentLocation();
-			Response(
-				args.ClientInfo,
-				location.Description,
-				location.ImageUrl,
-				location.GetButtons()
-			);
+			ResumeGame(character, args);
+		}
+
+		private void HandleLocationCommand(Character character, LocationCommand command, RequestEventArgs args)
+		{
+			if (command.IsShopCommand()) {												//МАГАЗ
+				if (character.CurrentState == CharacterState.Shop) {
+					switch (command) {
+						case LocationCommand.BuyArmor:
+							if (character.TryBuyItem(ItemSlot.Armor)) {
+								Response(args.ClientInfo, "Поздравляю с покупкой наряда");
+							} else {
+								Response(args.ClientInfo, "Извини, но мы живем при капитализме, чтоб одеться, нужны бабки");
+							}
+							break;
+						case LocationCommand.BuyWeapon:
+							if (character.TryBuyItem(ItemSlot.Weapon)) {
+								Response(args.ClientInfo, "Поздравляю с покупкой средства самообороны");
+							} else {
+								Response(args.ClientInfo, "Мы живем при капитализме, чтобы быть в безопасности, нужны бабки");
+							}
+							break;
+						case LocationCommand.BuyPotion:
+							if (character.TryBuyItem(ItemSlot.Potion)) {
+								Response(args.ClientInfo, "Поздравляю с покупкой алкоголя");
+							} else {
+								Response(args.ClientInfo, "Мы живем при капитализме, чтобы выпить, нужны бабки");
+							}
+							break;
+					}
+				} else {
+					Response(args.ClientInfo, "Чтобы купить что-то ходи в ларёк");
+				}
+			} else if (command.IsSchoolCommand()) {												//ППК
+				if (character.CurrentState == CharacterState.School) {
+					switch (command) {
+						case LocationCommand.LearnStr:
+							if (character.TryLearn(CharacterStat.Str)) {
+								Response(args.ClientInfo, "Препод бьет тебя палкой по рукам и они становятся сильнее");
+								SQLManager.Save(character.GetData());
+							} else {
+								Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+							}
+							break;
+						case LocationCommand.LearnAgi:
+							if (character.TryLearn(CharacterStat.Agi)) {
+								Response(args.ClientInfo, "Препод бьет тебя прутиком по ногам и они становится быстрее");
+							} else {
+								Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+							}
+							break;
+						case LocationCommand.LearnInt:
+							if (character.TryLearn(CharacterStat.Int)) {
+								Response(args.ClientInfo, "Препод бьет тебя учебником по голове и она становится умнее");
+							} else {
+								Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+							}
+							break;
+						case LocationCommand.LearnPhy:
+							if (character.TryLearn(CharacterStat.Phy)) {
+								Response(args.ClientInfo, "Препод бьет тебя доской по жепе и она становится крепче");
+							} else {
+								Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+							}
+							break;
+					}
+				} else {
+					Response(args.ClientInfo, "Чтобы учиться, ходи в ППК");
+				}
+			} else if (command.IsArenaCommand()) {
+				if (character.CurrentState == CharacterState.Arena) {
+					var enemy = character.CurrentEnemy;
+					switch (command) {
+						case LocationCommand.Attack:
+							character.CurrentEnemy.TakeDamage(character.Damage);
+							break;
+						case LocationCommand.Defence:
+
+							break;
+						case LocationCommand.UsePotion:
+							break;
+					}
+				} else {
+					Response(args.ClientInfo, "Бухать, прыгать и махать руками нужно на арене, брат");
+				}
+			}
+			ResumeGame(character, args);
 		}
 
 		private void HandleBaseCommand(Player player, RequestEventArgs args)
@@ -97,124 +179,6 @@ namespace MyBot.Bot
 					} else {
 						Response(args.ClientInfo, "Куда вот ты стартуешь?\nМы уже начали, играй давай", buttons: new[] { Buttons.Menu });
 					}
-					break;
-
-				case GameCommand.LearnStr:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
-						if (player.ActiveCharacter.TryLearn(CharacterStat.Str)) {
-							Response(args.ClientInfo, "Препод бьет тебя палкой по рукам и они становятся сильнее");
-						} else {
-							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
-						}
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-				case GameCommand.LearnAgi:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
-						if (player.ActiveCharacter.TryLearn(CharacterStat.Agi)) {
-							Response(args.ClientInfo, "Препод бьет тебя прутиком по ногам и они становится быстрее");
-						} else {
-							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
-						}
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-				case GameCommand.LearnInt:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
-						if (player.ActiveCharacter.TryLearn(CharacterStat.Int)) {
-							Response(args.ClientInfo, "Препод бьет тебя учебником по голове и она становится умнее");
-						} else {
-							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
-						}
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-				case GameCommand.LearnPhy:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
-						if (player.ActiveCharacter.TryLearn(CharacterStat.Phy)) {
-							Response(args.ClientInfo, "Препод бьет тебя доской по жепе и она становится крепче");
-						} else {
-							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
-						}
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-
-				case GameCommand.BuyArmor:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Shop) {
-						if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Armor)) {
-							Response(args.ClientInfo, "Поздравляю с покупкой наряда");
-						} else {
-							Response(args.ClientInfo, "Извини, но мы живем при капитализме, чтоб одеться, нужны бабки");
-						}
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-				case GameCommand.BuyWeapon:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Shop) {
-						if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Weapon)) {
-							Response(args.ClientInfo, "Поздравляю с покупкой средства самообороны");
-						} else {
-							Response(args.ClientInfo, "Мы живем при капитализме, чтобы быть в безопасности, нужны бабки");
-						}
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-				case GameCommand.BuyPotion:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Shop) {
-						if (player.ActiveCharacter.TryUpgradeItem(ItemSlot.Potion)) {
-							Response(args.ClientInfo, "Поздравляю с покупкой алкоголя");
-						} else {
-							Response(args.ClientInfo, "Мы живем при капитализме, чтобы выпить, нужны бабки");
-						}
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-						Response(args.ClientInfo, "Не роби так");
-					}
-					
-					break;
-				
-				case GameCommand.Attack:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Arena) {
-
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-
-						Response(args.ClientInfo, "Не роби так");
-					}
-					//хуй пойми ваще че писать сюда
-					break;
-				case GameCommand.Defence:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Arena) {
-						
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-				case GameCommand.UsePotion:
-					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.Arena) {
-						
-						ResumeGame(player.ActiveCharacter, args);
-					} else {
-
-						Response(args.ClientInfo, "Не роби так");
-					}
-					break;
-				default:
 					break;
 			}
 		}
@@ -250,7 +214,12 @@ namespace MyBot.Bot
 				case PlayerState.InMenu:
 				case PlayerState.InGame:
 				default:
-					Response(args.ClientInfo, "Для управления кнопки есть. Листани выше и понажимай");
+					Response(
+						args.ClientInfo,
+						$"Для управления кнопки есть." +
+						$"\nНе надо мне текст сейчас отправлять, я не просил" +
+						$"\nЕсли что, вот твой текущий стейт: {player.CurrentState}"
+					);
 					break;
 			}
 		}
@@ -260,7 +229,7 @@ namespace MyBot.Bot
 			var location = character.GetCurrentLocation();
 			Response(
 				args.ClientInfo,
-				location.Description,
+				$"{location.Description}\nТвои текущие статы:\n{character.GetData()}",
 				location.ImageUrl,
 				location.GetButtons()
 			);
