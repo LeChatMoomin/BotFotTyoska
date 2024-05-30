@@ -62,7 +62,7 @@ namespace MyBot.Bot
 					Response(args.ClientInfo, "Че хочу?", buttons: new[] { Buttons.CreateChar, Buttons.DeleteChar, Buttons.CharInfo});
 					break;
 				case PlayerState.InGame:
-					StartGame(player.ActiveCharacter, args);
+					ResumeGame(player.ActiveCharacter, args);
 					break;
 				case PlayerState.WatchingCharInfo:
 					Response(args.ClientInfo, "Про кого рассказать?", buttons: GenerateCharList(player.GetData()));
@@ -86,6 +86,8 @@ namespace MyBot.Bot
 
 		private void HandleBaseCommand(Player player, RequestEventArgs args)
 		{
+			var character = player.ActiveCharacter;
+			var gold = character.GetData().Gold;
 			switch (args.Command) {
 				case GameCommand.Start:
 					if (player.CurrentState == PlayerState.Greetings) {
@@ -98,6 +100,75 @@ namespace MyBot.Bot
 						Response(args.ClientInfo, "Куда вот ты стартуешь?\nМы уже начали, играй давай", buttons: new[] { Buttons.Menu });
 					}
 					break;
+
+				case GameCommand.LearnStr:
+					if (gold > 0) {
+						character.Learn(CharacterStat.Str);
+					} else {
+						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+					}
+					ResumeGame(character, args);
+					break;
+				case GameCommand.LearnAgi:
+					if (gold > 0) {
+						character.Learn(CharacterStat.Str);
+					} else {
+						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+					}
+					ResumeGame(character, args);
+					break;
+				case GameCommand.LearnInt:
+					if (gold > 0) {
+						character.Learn(CharacterStat.Str);
+					} else {
+						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+					}
+					ResumeGame(character, args);
+					break;
+				case GameCommand.LearnPhy:
+					if (gold > 0) {
+						character.Learn(CharacterStat.Str);
+					} else {
+						Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
+					}
+					ResumeGame(character, args);
+					break;
+
+				case GameCommand.BuyArmor:
+					if (gold > character.GetData().Armor.Cost) {
+
+					} else {
+						Response(args.ClientInfo, "Извини, но мы живем при капитализме");
+					}
+					ResumeGame(character, args);
+					break;
+				case GameCommand.BuyWeapon:
+					if (gold > character.GetData().Weapon.Cost) {
+
+					} else {
+
+					}
+					ResumeGame(character, args);
+					break;
+				case GameCommand.BuyPotion:
+					if (gold > character.GetData().Potion.Cost) {
+
+					} else {
+
+					}
+					ResumeGame(character, args);
+					break;
+				
+				case GameCommand.Attack:
+					//хуй пойми ваще че писать сюда
+					ResumeGame(character, args);
+					break;
+				case GameCommand.Defence:
+					ResumeGame(character, args);
+					break;
+				case GameCommand.UsePotion:
+					ResumeGame(character, args);
+					break;
 				default:
 					break;
 			}
@@ -106,9 +177,9 @@ namespace MyBot.Bot
 		private void HandleTextMessage(Player player, RequestEventArgs args)
 		{
 			//вот эта вот хуйня подойдет для фикса
-			//if (player.GetData().Characters.Count == 0) {
-			//	player.TakeAction(PlayerAction.CreateChar);
-			//}
+			if (player.GetData().Characters.Count == 0) {
+				player.TakeAction(PlayerAction.CreateChar);
+			}
 			switch (player.CurrentState) {
 				case PlayerState.Greetings:
 					Response(args.ClientInfo, "Да, да, привет, ага\nЧтобы играть, нужен перс", buttons: new[] { Buttons.CreateChar});
@@ -137,7 +208,7 @@ namespace MyBot.Bot
 			}
 		}
 
-		private void StartGame(Character character, RequestEventArgs args)
+		private void ResumeGame(Character character, RequestEventArgs args)
 		{
 			var location = character.GetCurrentLocation();
 			Response(

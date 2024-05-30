@@ -6,7 +6,6 @@ namespace MyBot.Game
 	{
 		private CharacterData Data;
 		private CharacterStateMachine StateMachine;
-		public event EventHandler<CharacterState> StateChanged;
 
 		public CharacterState CurrentState => StateMachine.CurrentState;
 		public int Id => Data.Id;
@@ -15,7 +14,6 @@ namespace MyBot.Game
 		{
 			Data = new CharacterData(data);
 			StateMachine = new CharacterStateMachine(data.State);
-			StateMachine.StateChanged += OnStateChanged;
 		}
 
 		public Location GetCurrentLocation()
@@ -33,9 +31,31 @@ namespace MyBot.Game
 
 		public CharacterData GetData() => new CharacterData(Data);
 
-		private void OnStateChanged(object sender, CharacterState newState)
+		public void Learn(CharacterStat stat)
 		{
-			StateChanged.Invoke(this, newState);
+			Data.Gold--;
+			switch (stat) {
+				case CharacterStat.Str:
+					Data.Str++;
+					break;
+				case CharacterStat.Agi:
+					Data.Agi++;
+					break;
+				case CharacterStat.Phy:
+					Data.Phy++;
+					break;
+				case CharacterStat.Int:
+					Data.Int++;
+					break;
+			}
 		}
+	}
+
+	public enum CharacterStat
+	{
+		Str,
+		Agi,
+		Phy,
+		Int
 	}
 }

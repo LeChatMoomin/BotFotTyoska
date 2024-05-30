@@ -22,7 +22,6 @@ namespace MyBot.Game
 	{
 		private CharacterState state = CharacterState.Home;
 		public CharacterState CurrentState { get => state; }
-		public event EventHandler<CharacterState> StateChanged;
 
 		public CharacterStateMachine(CharacterState state)
 		{
