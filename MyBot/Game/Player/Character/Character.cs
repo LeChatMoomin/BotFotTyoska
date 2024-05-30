@@ -24,6 +24,7 @@ namespace MyBot.Game
 		{
 			Data = new CharacterData(data);
 			StateMachine = new CharacterStateMachine(data.State);
+			StateMachine.LocationChanged += OnLocationChanged;
 			UpdateMaxHealth();
 			UpdateDamage();
 		}
@@ -93,6 +94,13 @@ namespace MyBot.Game
 				return true;
 			}
 			return false;
+		}
+
+		private void OnLocationChanged(object sender, CharacterLocation state)
+		{
+			if (state == CharacterLocation.Arena) {
+				Locations.Arena = new Arena();
+			}
 		}
 
 		public bool TryLearn(CharacterStat stat)

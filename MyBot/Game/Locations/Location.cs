@@ -15,10 +15,10 @@ namespace MyBot.Game
 
 	public static class Locations
 	{
-		public static Location Home => new Home();
-		public static Location School => new School();
-		public static Location Shop => new Shop();
-		public static Location Arena => new Arena();
+		public static Location Home { get; set; } = new Home();
+		public static Location School { get; set; } = new School();
+		public static Location Shop { get; set; } = new Shop();
+		public static Location Arena { get; set; } = new Arena();
 	}
 
 	public enum LocationCommand

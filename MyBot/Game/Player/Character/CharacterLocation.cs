@@ -22,6 +22,7 @@ namespace MyBot.Game
 	{
 		private CharacterLocation state = CharacterLocation.Home;
 		public CharacterLocation CurrentState { get => state; }
+		public EventHandler<CharacterLocation> LocationChanged;
 
 		public CharacterStateMachine(CharacterLocation state)
 		{
@@ -30,6 +31,7 @@ namespace MyBot.Game
 
 		public void Act(CharacterAction action)
 		{
+			var oldState = state;
 			state = (state, action) switch {
 				(CharacterLocation.Home, CharacterAction.GoSchool) => CharacterLocation.School, 
 				(CharacterLocation.Home, CharacterAction.GoShop) => CharacterLocation.Shop,
@@ -43,6 +45,9 @@ namespace MyBot.Game
 				(CharacterLocation.School, CharacterAction.GoShop) => CharacterLocation.Shop,
 				_ => state,
 			};
+			if (state != oldState) {
+				LocationChanged.Invoke(this, state);
+			}
 		}
 	}
 }
