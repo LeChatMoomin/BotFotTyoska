@@ -57,6 +57,7 @@ namespace MyBot.Game
 				return builder.ToString();
 		}
 
+		//Для проверок всяких
 		public override bool Equals(object obj)
 		{
 			if (obj is CharacterData) {

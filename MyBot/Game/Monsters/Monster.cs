@@ -9,8 +9,11 @@ namespace MyBot.Game
 	public abstract class Monster
 	{
 		public string Name { get; set; }
+		public int MaxHealth { get; set; }
+		public int Damage { get; set; }
+
 		private int health;
-		public int Health => health;
+		public int CurrentHealth => health;
 		public event EventHandler<int> Died;
 
 		public Monster()
@@ -29,6 +32,9 @@ namespace MyBot.Game
 
 	public static class Monsters
 	{
-		public static Monster Pudge => new Pudge();
+		public static Monster Pudge => new Pudge() { Name = "ПУДГЕ", MaxHealth = 20, Damage = 8 };
+		public static Monster Ghoul => new Pudge() { Name = "ГУЛЯШ", MaxHealth = 3, Damage = 2 };
+		public static Monster Wiwern => new Pudge() { Name = "АЛКОГОЛЬНОЕ ИСПАРЕНИЕ", MaxHealth = 6, Damage = 3 };
+		public static Monster Dino => new Pudge() { Name = "ПРОКРАСТИНАТОР", MaxHealth = 10, Damage = 6 };
 	}
 }
