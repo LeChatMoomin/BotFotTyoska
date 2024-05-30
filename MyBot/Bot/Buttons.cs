@@ -25,9 +25,9 @@ namespace MyBot
 
 		//Школа
 		public static InlineKeyboardButton LearnStr => InlineKeyboardButton.WithCallbackData("СИЛА", "/LearnStr");
-		public static InlineKeyboardButton LearnAgi => InlineKeyboardButton.WithCallbackData("ЛОВКОСТЬ", "/LearnAgi ");
+		public static InlineKeyboardButton LearnAgi => InlineKeyboardButton.WithCallbackData("ЛОВКОСТЬ", "/LearnAgi");
 		public static InlineKeyboardButton LearnInt => InlineKeyboardButton.WithCallbackData("ИНТЕЛЛЕКТ", "/LearnInt");
-		public static InlineKeyboardButton LearnPhy => InlineKeyboardButton.WithCallbackData("ФИЗУХА", "/LearnPhy ");
+		public static InlineKeyboardButton LearnPhy => InlineKeyboardButton.WithCallbackData("ФИЗУХА", "/LearnPhy");
 
 
 		//Арена
