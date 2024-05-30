@@ -19,6 +19,15 @@ namespace MyBot.Game
 			Characters = data.Characters.Select(cd => new CharacterData(cd)).ToList();
 		}
 
+		public override bool Equals(object obj)
+		{
+			if (obj is PlayerData) {
+				var data = obj as PlayerData;
+				return Id == data.Id;
+			}
+			return false;
+		}
+
 		public long Id { get; set; }
 		public PlayerState State { get; set; } = PlayerState.Greetings;
 		public List<CharacterData> Characters { get; set; } = new List<CharacterData>();
