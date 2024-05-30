@@ -5,6 +5,11 @@ namespace MyBot.Game
 {
 	public class PlayerData
 	{
+		public long Id { get; set; }
+		public PlayerState State { get; set; } = PlayerState.Greetings;
+		public List<CharacterData> Characters { get; set; } = new List<CharacterData>();
+		public int ActiveCharacter { get; set; }
+
 		public PlayerData() { }
 
 		/// <summary>
@@ -27,9 +32,5 @@ namespace MyBot.Game
 			}
 			return false;
 		}
-
-		public long Id { get; set; }
-		public PlayerState State { get; set; } = PlayerState.Greetings;
-		public List<CharacterData> Characters { get; set; } = new List<CharacterData>();
 	}
 }
