@@ -23,12 +23,18 @@ namespace MyBot.Bot
 				player = new Player(data);
 				LoadedPlayers.Add(userId, player);
 			}
+			
 
 			if (args.Command.HasValue) {
 				if (args.Command.Value.IsPlayerAction(out var playerAction)) {					//Если команда - это действие игрока
 					HandlePlayerAction(player, playerAction.Value, args);
-				} else if (args.Command.Value.IsCharacterAction(out var characterAction)) {		//если это действие перса
-					HandleCharacterAction(player.ActiveCharacter, characterAction.Value, args);
+				} else if (args.Command.Value.IsCharacterAction(out var characterAction)) {     //если это действие перса
+					if (player.ActiveCharacter == null) {
+						Response(args.ClientInfo, "Чтобы играть, нужен перс", buttons: new[] { Buttons.CreateChar });
+						return;
+					} else {
+						HandleCharacterAction(player.ActiveCharacter, characterAction.Value, args);
+					}
 				} else {																		//остальные команды
 					HandleBaseCommand(player, args);
 				}
@@ -40,8 +46,11 @@ namespace MyBot.Bot
 
 		private void HandlePlayerAction(Player player, PlayerAction action, RequestEventArgs args)
 		{
-			var prevState = player.CurrentState;
-			player.TakeAction(action);
+			if (player.ActiveCharacter == null) {
+				player.TakeAction(PlayerAction.CreateChar);
+			} else {
+				player.TakeAction(action);
+			}
 			switch (player.CurrentState) {
 				case PlayerState.CreatingNewChar:
 					Response(args.ClientInfo, "Персонажу нужно имя, введи его и получишь результат");
@@ -53,11 +62,7 @@ namespace MyBot.Bot
 					Response(args.ClientInfo, "Че хочу?", buttons: new[] { Buttons.CreateChar, Buttons.DeleteChar, Buttons.CharInfo});
 					break;
 				case PlayerState.InGame:
-					if (prevState == PlayerState.CreatingNewChar) {
-						StartNewGame(player.ActiveCharacter, args);
-					} else {
-						ContinueGame(player.ActiveCharacter, args);
-					}
+					StartGame(player.ActiveCharacter, args);
 					break;
 				case PlayerState.WatchingCharInfo:
 					Response(args.ClientInfo, "Про кого рассказать?", buttons: GenerateCharList(player.GetData()));
@@ -69,7 +74,14 @@ namespace MyBot.Bot
 
 		private void HandleCharacterAction(Character character, CharacterAction action, RequestEventArgs args)
 		{
-			//хуё моё
+			character.TakeAction(action);
+			var location = character.GetCurrentLocation();
+			Response(
+				args.ClientInfo,
+				location.Description,
+				location.ImageUrl,
+				location.GetButtons()
+			);
 		}
 
 		private void HandleBaseCommand(Player player, RequestEventArgs args)
@@ -93,6 +105,10 @@ namespace MyBot.Bot
 
 		private void HandleTextMessage(Player player, RequestEventArgs args)
 		{
+			//вот эта вот хуйня подойдет для фикса
+			//if (player.GetData().Characters.Count == 0) {
+			//	player.TakeAction(PlayerAction.CreateChar);
+			//}
 			switch (player.CurrentState) {
 				case PlayerState.Greetings:
 					Response(args.ClientInfo, "Да, да, привет, ага\nЧтобы играть, нужен перс", buttons: new[] { Buttons.CreateChar});
@@ -121,14 +137,15 @@ namespace MyBot.Bot
 			}
 		}
 
-		private void StartNewGame(Character character, RequestEventArgs args)
+		private void StartGame(Character character, RequestEventArgs args)
 		{
-
-		}
-
-		private void ContinueGame(Character character, RequestEventArgs args)
-		{
-
+			var location = character.GetCurrentLocation();
+			Response(
+				args.ClientInfo,
+				location.Description,
+				location.ImageUrl,
+				location.GetButtons()
+			);
 		}
 
 		private void CreateNewCharForPlayer(Player player, string name)
@@ -162,7 +179,7 @@ namespace MyBot.Bot
 
 		private CharacterData GetCharacterByName(string name, PlayerData playerData)
 		{
-			var data = playerData.Characters.First(c => c.Name == name);
+			var data = playerData.Characters.FirstOrDefault(c => c.Name == name);
 			if (data == null) {
 				data = SQLManager.GetCharsForUser(playerData.Id).First(c => c.Name == name);
 			}

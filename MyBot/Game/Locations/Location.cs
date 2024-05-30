@@ -5,7 +5,9 @@ namespace MyBot.Game
 {
 	public abstract class Location
 	{
-		public virtual List<InlineKeyboardButton> GetLocationButtons()
+		public virtual string ImageUrl { get; }
+		public virtual string Description { get; }
+		public virtual List<InlineKeyboardButton> GetButtons()
 		{
 			return new List<InlineKeyboardButton> { Buttons.Menu };
 		}

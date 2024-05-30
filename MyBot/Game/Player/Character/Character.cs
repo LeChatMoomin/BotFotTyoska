@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyBot.Game
 {
@@ -32,6 +28,8 @@ namespace MyBot.Game
 				_ => null
 			};
 		}
+
+		public void TakeAction(CharacterAction action) => StateMachine.Act(action);
 
 		public CharacterData GetData() => new CharacterData(Data);
 

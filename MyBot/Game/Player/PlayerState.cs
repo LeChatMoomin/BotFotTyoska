@@ -25,7 +25,6 @@ namespace MyBot.Game
 	{
 		private PlayerState state;
 		public PlayerState CurrentState { get => state; }
-		public event EventHandler<PlayerState> OnAction;
 
 		public PlayerStateMachine(PlayerState state = PlayerState.Greetings)
 		{
@@ -51,7 +50,6 @@ namespace MyBot.Game
 				(PlayerState.WatchingCharInfo, PlayerAction.CreateChar) => PlayerState.CreatingNewChar,
 				_ => state,
 			};
-			OnAction.Invoke(this, state);
 		}
 	}
 }

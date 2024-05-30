@@ -5,17 +5,16 @@ namespace MyBot.Game
 {
 	public class Shop : Location
 	{
-		public override List<InlineKeyboardButton> GetLocationButtons()
+		public override string ImageUrl => "https://raw.githubusercontent.com/GeonAndKotN/BotInTg/master/shop.jpg";
+		public override string Description => "Добро пожаловать в ☭Магазин☭";
+		public override List<InlineKeyboardButton> GetButtons()
 		{
 			var result = new List<InlineKeyboardButton> {
 				Buttons.BuyArmor,
 				Buttons.BuyWeapon,
 				Buttons.BuyPotion,
 				Buttons.GoHome,
-				Buttons.GoSchool,
-				Buttons.GoArena
 			};
-			result.AddRange(base.GetLocationButtons());
 			return result;
 		}
 	}

@@ -5,7 +5,9 @@ namespace MyBot.Game
 {
 	public class School : Location
 	{
-		public override List<InlineKeyboardButton> GetLocationButtons()
+		public override string ImageUrl => "https://raw.githubusercontent.com/GeonAndKotN/BotInTg/master/sharaga.jpg";
+		public override string Description => "Ученье - свет, а неученье - нет";
+		public override List<InlineKeyboardButton> GetButtons()
 		{
 			var result = new List<InlineKeyboardButton> {
 				Buttons.LearnStr,
@@ -13,10 +15,7 @@ namespace MyBot.Game
 				Buttons.LearnInt,
 				Buttons.LearnPhy,
 				Buttons.GoHome,
-				Buttons.GoShop,
-				Buttons.GoArena
 			};
-			result.AddRange(base.GetLocationButtons());
 			return result;
 		}
 	}

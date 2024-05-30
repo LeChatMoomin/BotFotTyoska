@@ -25,7 +25,7 @@ namespace MyBot.DataBase
 			try {
 				using (var connection = new MySqlConnection(ConnectionString)) {
 					connection.Open();
-					var saveCommand = $"UPDATE `{DbName}`.`Users` SET `State` = {(int)data.State} WHERE User_id = {data.Id};";
+					var saveCommand = $"UPDATE `{DbName}`.`Users` SET `State` = {(int)data.State} WHERE User_id = {data.Id}";
 					using (var reader = new MySqlCommand(saveCommand, connection).ExecuteReader()) {
 						if (reader.Read()) {
 							for (int i = 0; i < data.Characters.Count; i++) {

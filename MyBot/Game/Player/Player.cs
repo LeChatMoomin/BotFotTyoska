@@ -15,7 +15,9 @@ namespace MyBot.Game
 		{
 			Data = new PlayerData(data);
 			StateMachine = new PlayerStateMachine(data.State);
-			StateMachine.OnAction += OnStateChanged;
+			if (data.Characters.Any()) {
+				SetActiveCharacter(new Character(data.Characters[0]));
+			}
 		}
 
 		public PlayerData GetData() => new PlayerData(Data);
@@ -33,29 +35,6 @@ namespace MyBot.Game
 		public void RemoveCharacter(string name)
 		{
 			Data.Characters.Remove(Data.Characters.First(c => c.Name == name));
-		}
-
-		private void OnStateChanged(object sender, PlayerState newState)
-		{
-			if (!Data.State.Equals(newState)) {
-				var oldState = Data.State;
-				switch (newState) {
-					case PlayerState.CreatingNewChar:
-
-						break;
-					case PlayerState.DeletingChar:
-						break;
-					case PlayerState.InMenu:
-						break;
-					case PlayerState.InGame:
-						break;
-					case PlayerState.WatchingCharInfo:
-						break;
-					default:
-						break;
-				}
-				Data.State = newState;
-			}
 		}
 	}
 }

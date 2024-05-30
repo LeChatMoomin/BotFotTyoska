@@ -32,7 +32,7 @@ namespace MyBot
 
 		//Арена
 		public static InlineKeyboardButton Attack => InlineKeyboardButton.WithCallbackData("УДАРИТЬ", "/Attack ");
-		public static InlineKeyboardButton Defence => InlineKeyboardButton.WithCallbackData("БЛОКИРОВАТЬ", "/Defence");
+		public static InlineKeyboardButton Defence => InlineKeyboardButton.WithCallbackData("БЛОК", "/Defence");
 		public static InlineKeyboardButton UsePotion => InlineKeyboardButton.WithCallbackData("ВЫПИТЬ", "/UsePotion");
 		public static InlineKeyboardButton Run => InlineKeyboardButton.WithCallbackData("СВАЛИТЬ", "/GoHome");
 	}
