@@ -243,7 +243,9 @@ namespace MyBot.Bot
 					}
 					break;
 				case PlayerState.WatchingCharInfo:
-					Response(args.ClientInfo, GetCharacterByName(args.Text, player.GetData()).ToString(), buttons: new[] { Buttons.Play, Buttons.Menu });
+					var characterData = GetCharacterByName(args.Text, player.GetData());
+					player.SetActiveCharacter(new Character(characterData));
+					Response(args.ClientInfo, characterData.ToString(), buttons: new[] { Buttons.Play, Buttons.Menu });
 					break;
 				case PlayerState.InMenu:
 				case PlayerState.InGame:
