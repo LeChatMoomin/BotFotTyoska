@@ -17,7 +17,12 @@ namespace MyBot.Game
 
 		public Monster()
 		{
+			ResetHealth();
+		}
 
+		private void ResetHealth()
+		{
+			health = MaxHealth;
 		}
 
 		public void TakeDamage(int value)
@@ -28,9 +33,10 @@ namespace MyBot.Game
 
 	public static class Monsters
 	{
-		public static Monster GetForLevel(int level)
+		public static Monster GetRandom()
 		{
-			switch (level) {
+			var index = new Random().Next(4);
+			switch (index) {
 				case 1:
 					return Wiwern;
 				case 2:

@@ -83,7 +83,7 @@ namespace MyBot.Bot
 		private void HandleLocationCommand(Character character, LocationCommand command, RequestEventArgs args)
 		{
 			if (command.IsShopCommand()) {												//МАГАЗ
-				if (character.CurrentState == CharacterState.Shop) {
+				if (character.CurrentLocation == CharacterLocation.Shop) {
 					switch (command) {
 						case LocationCommand.BuyArmor:
 							if (character.TryBuyItem(SQLManager.GetItem(character.GetData().Armor.Id + 1, ItemSlot.Armor))) {
@@ -111,7 +111,7 @@ namespace MyBot.Bot
 					Response(args.ClientInfo, "Чтобы купить что-то ходи в ларёк");
 				}
 			} else if (command.IsSchoolCommand()) {												//ППК
-				if (character.CurrentState == CharacterState.School) {
+				if (character.CurrentLocation == CharacterLocation.School) {
 					switch (command) {
 						case LocationCommand.LearnStr:
 							if (character.TryLearn(CharacterStat.Str)) {
@@ -147,7 +147,7 @@ namespace MyBot.Bot
 					Response(args.ClientInfo, "Чтобы учиться, ходи в ППК");
 				}
 			} else if (command.IsArenaCommand()) {
-				if (character.CurrentState == CharacterState.Arena) {
+				if (character.CurrentLocation == CharacterLocation.Arena) {
 					var enemy = character.CurrentEnemy;
 					switch (command) {
 						case LocationCommand.Attack:
@@ -243,6 +243,9 @@ namespace MyBot.Bot
 		private void ResumeGame(Character character, RequestEventArgs args)
 		{
 			var location = character.GetCurrentLocation();
+			if (location is Arena) {
+				character.CurrentEnemy = (location as Arena).Monster;
+			}
 			Response(
 				args.ClientInfo,
 				$"Твои текущие статы:\n{character.GetData()}\n\n{location.Description}",

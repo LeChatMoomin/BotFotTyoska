@@ -13,7 +13,7 @@ namespace MyBot.Game
 		public int Agi { get; set; } = 1;
 		public int Int { get; set; } = 1;
 		public int Gold { get; set; } = 1000;
-		public CharacterState State { get; set; }
+		public CharacterLocation State { get; set; }
 		public ItemData Weapon { get; set; }
 		public ItemData Armor { get; set; }
 		public ItemData Potion { get; set; }

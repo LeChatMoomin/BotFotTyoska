@@ -28,6 +28,6 @@ namespace MyBot.Game
 			return builder.ToString();
 		}
 
-		public Monster Monster { get; }
+		public Monster Monster { get; } = Monsters.GetRandom();
 	}
 }

@@ -14,7 +14,7 @@ namespace MyBot.Game
 
 		public Monster CurrentEnemy;
 
-		public CharacterState CurrentState => StateMachine.CurrentState;
+		public CharacterLocation CurrentLocation => StateMachine.CurrentState;
 		public int Id => Data.Id;
 		public int CurrentHealth => currentHealth;
 		public int Damage => damage;
@@ -35,11 +35,11 @@ namespace MyBot.Game
 
 		public Location GetCurrentLocation()
 		{
-			return CurrentState switch {
-				CharacterState.Home => Locations.Home,
-				CharacterState.Shop => Locations.Shop,
-				CharacterState.School => Locations.School,
-				CharacterState.Arena => Locations.Arena,
+			return CurrentLocation switch {
+				CharacterLocation.Home => Locations.Home,
+				CharacterLocation.Shop => Locations.Shop,
+				CharacterLocation.School => Locations.School,
+				CharacterLocation.Arena => Locations.Arena,
 				_ => null
 			};
 		}
