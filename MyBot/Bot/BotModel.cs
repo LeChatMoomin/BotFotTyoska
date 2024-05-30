@@ -102,7 +102,7 @@ namespace MyBot.Bot
 				case GameCommand.LearnStr:
 					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
 						if (player.ActiveCharacter.TryLearn(CharacterStat.Str)) {
-							Response(args.ClientInfo, "");
+							Response(args.ClientInfo, "Препод бьет тебя палкой по рукам и они становятся сильнее");
 						} else {
 							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
 						}
@@ -114,7 +114,7 @@ namespace MyBot.Bot
 				case GameCommand.LearnAgi:
 					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
 						if (player.ActiveCharacter.TryLearn(CharacterStat.Agi)) {
-							Response(args.ClientInfo, "");
+							Response(args.ClientInfo, "Препод бьет тебя прутиком по ногам и они становится быстрее");
 						} else {
 							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
 						}
@@ -126,7 +126,7 @@ namespace MyBot.Bot
 				case GameCommand.LearnInt:
 					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
 						if (player.ActiveCharacter.TryLearn(CharacterStat.Int)) {
-							Response(args.ClientInfo, "");
+							Response(args.ClientInfo, "Препод бьет тебя учебником по голове и она становится умнее");
 						} else {
 							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
 						}
@@ -138,7 +138,7 @@ namespace MyBot.Bot
 				case GameCommand.LearnPhy:
 					if (player.ActiveCharacter != null && player.ActiveCharacter.CurrentState == CharacterState.School) {
 						if (player.ActiveCharacter.TryLearn(CharacterStat.Phy)) {
-							Response(args.ClientInfo, "");
+							Response(args.ClientInfo, "Препод бьет тебя доской по жепе и она становится крепче");
 						} else {
 							Response(args.ClientInfo, "Сорян, но у тебя нет денег, чтобы учиться");
 						}
