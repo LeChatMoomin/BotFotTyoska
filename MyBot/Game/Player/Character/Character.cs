@@ -9,6 +9,7 @@ namespace MyBot.Game
 		private int currentHealth;
 		private int maxHealth;
 		private int damage;
+		private bool isPotionUsedAlready = false;
 
 
 		public Monster CurrentEnemy;
@@ -17,6 +18,7 @@ namespace MyBot.Game
 		public int Id => Data.Id;
 		public int CurrentHealth => currentHealth;
 		public int Damage => damage;
+		public bool IsDead => currentHealth <= 0;
 
 		public Character(CharacterData data)
 		{
@@ -24,6 +26,11 @@ namespace MyBot.Game
 			StateMachine = new CharacterStateMachine(data.State);
 			UpdateMaxHealth();
 			UpdateDamage();
+		}
+
+		public void TakeReward(int value)
+		{
+			Data.Gold += value;
 		}
 
 		public Location GetCurrentLocation()
@@ -49,9 +56,19 @@ namespace MyBot.Game
 			damage = 2 + Data.Str * 3 + Data.Weapon.Value;
 		}
 
-		public void UsePotion()
+		public bool TryUsePotion()
 		{
-			currentHealth += Data.Potion.Value;
+			if (!isPotionUsedAlready) {
+				currentHealth += Data.Potion.Value;
+				isPotionUsedAlready = true;
+				return true;
+			}
+			return false;
+		}
+
+		public void TakeDamage(int value)
+		{
+			currentHealth -= value;
 		}
 
 		public void TakeAction(CharacterAction action) => StateMachine.Act(action);

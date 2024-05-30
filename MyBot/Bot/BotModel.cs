@@ -152,13 +152,31 @@ namespace MyBot.Bot
 					switch (command) {
 						case LocationCommand.Attack:
 							enemy.TakeDamage(character.Damage);
+							character.TakeDamage(enemy.Damage);
 							Response(args.ClientInfo, $"ТЫ АТАКУЕШЬ \n{enemy.Name} ПОЛУЧАЕТ {character.Damage} УРОНА ПРЯМО В ГОЛОВУ");
+							if (enemy.IsDead) {
+								Response(args.ClientInfo, $"{enemy.Name} ВМЕР\nТы получаешь {enemy.Reward} денег");
+								character.TakeReward(enemy.Reward);
+								character.TakeAction(CharacterAction.GoHome);
+								break;
+							}
 							Response(args.ClientInfo, $"{enemy.Name} АТАКУЕТ И ТЫ ПОЛУЧАЕШЬ {enemy.Damage} УРОНА ПО ЛИЦУ");
+							if (character.IsDead) {
+								Response(args.ClientInfo, $"ТЫ ВМЕР \n{enemy.Name} ЛИКУЕТ \nЗемля тебе пухом, друг");
+								character.TakeAction(CharacterAction.GoHome);
+							}
 							break;
 						case LocationCommand.Defence:
 							Response(args.ClientInfo, $"{enemy.Name} АТАКУЕТ НО ТЫ БЛОКИРУЕШЬ, ТАК МОЖЕТ ПРОДОЛЖАТЬСЯ БЕСКОНЕЧНО...");
 							break;
 						case LocationCommand.UsePotion:
+							if (character.TryUsePotion()) {
+								Response(args.ClientInfo, $"Ты выпил {character.GetData().Potion.Name}\nВроде полегчало");
+							} else {
+								Response(args.ClientInfo, "Ты пытался выпить зелье, но не смог его найти");
+							}
+							character.TakeDamage(enemy.Damage);
+							Response(args.ClientInfo, $"{enemy.Name} АТАКУЕТ И ТЫ ПОЛУЧАЕШЬ {enemy.Damage} УРОНА ПО ЛИЦУ");
 							break;
 					}
 				} else {

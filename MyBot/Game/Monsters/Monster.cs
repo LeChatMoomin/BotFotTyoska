@@ -13,7 +13,7 @@ namespace MyBot.Game
 
 		private int health;
 		public int CurrentHealth => health;
-		public event EventHandler<string> Died;
+		public bool IsDead => health <= 0;
 
 		public Monster()
 		{
@@ -23,9 +23,6 @@ namespace MyBot.Game
 		public void TakeDamage(int value)
 		{
 			health -= value;
-			if (health < 0) {
-				Died.Invoke(this, Name);
-			}
 		}
 	}
 
